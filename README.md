@@ -13,3 +13,15 @@ A multiplayer mod for the Totally Accurate Battle Simulator
 # How To Uninstall
 1. Close TABS
 1. Check TABS for errors (Steam->Tabs->Properties->Files->Check for errors)
+
+# How To Mod
+1. Clone the repository
+1. Change the location of the references to the ones on your computer
+1. Make your changes
+1. Change the output to Release
+1. Copy the content of MonoMod into the Release folder
+1. Copy the `Assembly-CSharp.dll` from the game's directory in there (I suggest you to set the reference to there)
+1. Execute `MonoMod.exe Assembly-CSharp.dll` in a command prompt
+1. Copy the `MONOMODDED_Assembly-CSharp.dll` back to the game's directory and rename it to the original
+1. Test the game
+1. Make a pull request :)
