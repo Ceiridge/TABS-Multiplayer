@@ -328,3 +328,6 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+#Don't detect the original and modded assembly
+*Assembly-CSharp.dll
