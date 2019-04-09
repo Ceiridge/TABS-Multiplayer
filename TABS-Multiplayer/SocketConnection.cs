@@ -20,9 +20,9 @@ namespace TABS_Multiplayer
 
             tcpServer = new TcpListener(IPAddress.Any, 8042); // TODO: Change the port if you want
             tcpClient = new TcpClient();
-
-            
         }
+
+
 
         public static TcpClient getTcpClient()
         {

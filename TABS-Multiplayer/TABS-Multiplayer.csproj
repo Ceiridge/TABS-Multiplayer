@@ -110,6 +110,8 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -367,6 +369,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="TABSBooterModifier.cs" />
+    <Compile Include="TABSMPForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TABSMPForm.Designer.cs">
+      <DependentUpon>TABSMPForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Settings.settings">
