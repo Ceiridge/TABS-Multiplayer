@@ -10,18 +10,8 @@ class patch_TABSBooter : TABSBooter
     public new void Init()
     {
         SocketConnection.Init(); // Init the socket manager
-
-        Thread formThread = new Thread(() => StartMPForm()); // Start a windows form UI
-        formThread.Start();
-        //TABSMPForm.instance = new TABSMPForm();
-        //TABSMPForm.instance.ShowDialog();
+        
 
         orig_Init();
-    }
-
-    public void StartMPForm()
-    {
-        TABSMPForm.instance = new TABSMPForm();
-        TABSMPForm.instance.ShowDialog();
     }
 }
