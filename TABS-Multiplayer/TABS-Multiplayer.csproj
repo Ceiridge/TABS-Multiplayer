@@ -31,7 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>E:\Steam\steamapps\common\Totally Accurate Battle Simulator\TotallyAccurateBattleSimulator_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>D:\VB\progs\TABS-Multiplayer\TABS-Multiplayer\bin\Release\Backup\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>E:\Steam\steamapps\common\Totally Accurate Battle Simulator\TotallyAccurateBattleSimulator_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
