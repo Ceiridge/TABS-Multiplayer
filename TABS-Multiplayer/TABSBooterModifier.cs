@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using TABS_Multiplayer;
 
 #pragma warning disable CS0626
@@ -14,7 +15,7 @@ class patch_TABSBooter : TABSBooter
         {
             inited = true;
             SocketConnection.Init(); // Init the socket manager
-
+            Process.Start("TABS-Multiplayer-UI.exe"); // Start the multiplayer UI
         }
 
         orig_Init(); // Execute the real method
