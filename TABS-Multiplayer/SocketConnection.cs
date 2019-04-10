@@ -11,7 +11,7 @@ namespace TABS_Multiplayer
     {
         private static TcpListener tcpServer, uiServer;
         private static TcpClient tcpClient, uiClient;
-        private static Thread uiTcpThread;
+        private static Thread uiTcpThread, serverTcpThread;
         private static BinaryWriter tcpWriter, uiWriter;
 
         public static void Init()
@@ -38,6 +38,15 @@ namespace TABS_Multiplayer
                     while(true) // Permanently try to read
                     {
                         string newData = reader.ReadString();
+
+                        if(newData.StartsWith("HOSTNOW")) // Unbelievably messy code for receiving commands (somebody else can improve it :)) )
+                        {
+                            serverTcpThread = new Thread(() => ListenServer());
+                            serverTcpThread.Start();
+                        } else if(newData.StartsWith("CONNECT|"))
+                        {
+                            tcpClient.Connect(newData.Split('|')[1], 8042); // Connect to ip with hardcoded port
+                        }
                     }
                 }
             }

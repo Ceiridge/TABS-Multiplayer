@@ -45,6 +45,7 @@ namespace TABS_Multiplayer_UI
         {
             WriteToTABS(StrToByte("HOSTNOW")); // Send the host command
             button1.Enabled = false; // Disable the host btn
+            button2.Enabled = false; // Disable the connection btn
         }
 
         private void connectBtn_Click(object sender, EventArgs e) // Connect Button
@@ -52,6 +53,8 @@ namespace TABS_Multiplayer_UI
             try
             {
                 WriteToTABS(StrToByte("CONNECT|" + IPAddress.Parse(textBox1.Text).ToString())); // Send connect cmd + ip with parse checking
+                button1.Enabled = false; // Disable the host btn
+                button2.Enabled = false; // Disable the connection btn
             } catch(Exception)
             {
                 MessageBox.Show("Invalid IP!", "Error");
