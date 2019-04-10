@@ -4,9 +4,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Security.Principal;
 
 namespace TABS_Multiplayer
 {
+
     // The class for handling the socket between the players and the ui locally
     public class SocketConnection
     {
@@ -19,7 +21,15 @@ namespace TABS_Multiplayer
         public static void Init()
         {
             tcpServer = new TcpListener(IPAddress.Any, 8042); // TODO: Change the port if you want
-            uiServer = new TcpListener(IPAddress.Parse("127.0.0.1"), 8044); // Listen for the UI client locally (Port: 8044)
+            try
+            {
+                uiServer = new TcpListener(IPAddress.Parse("127.0.0.1"), 8044); // Listen for the UI client locally (Port: 8044)
+                uiServer.Start();
+            } catch(Exception)
+            {
+                uiServer = new TcpListener(IPAddress.Parse("127.0.0.1"), 8046); // Debug Port (Start with Admin!)
+                uiServer.Start();
+            }
             tcpClient = new TcpClient();
 
             uiTcpThread = new Thread(() => ListenUI());
@@ -28,7 +38,6 @@ namespace TABS_Multiplayer
 
         private static void ListenUI()
         {
-            uiServer.Start();
             uiClient = uiServer.AcceptTcpClient(); // Wait and accept ui client
 
             using(NetworkStream nStream = uiClient.GetStream()) // Get the stream
@@ -67,11 +76,14 @@ namespace TABS_Multiplayer
 
         private static void ListenServer()
         {
-            tcpServer.Start();
-            tcpClient = tcpServer.AcceptTcpClient(); // Wait for an opponent
+            if (isServer)
+            {
+                tcpServer.Start();
+                tcpClient = tcpServer.AcceptTcpClient(); // Wait for an opponent
+            }
 
             WriteToUI("SHOWSAND");
-            using (NetworkStream nStream = uiClient.GetStream()) // Get the stream
+            using (NetworkStream nStream = tcpClient.GetStream()) // Get the stream
             {
                 using (BinaryReader reader = new BinaryReader(nStream)) // Read it
                 {

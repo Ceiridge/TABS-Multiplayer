@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -15,6 +11,7 @@ namespace TABS_Multiplayer_UI
 {
     public partial class MainUI : Form
     {
+        static bool IsElevated => new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
         public static bool DEBUG = true; // Debug Mode
         public static TcpClient tcp;
         public static BinaryWriter uiWriter;
@@ -41,7 +38,7 @@ namespace TABS_Multiplayer_UI
             screenshareForm.Show();
 
             Thread.Sleep(1500); // Sleep to make sure the socket's started
-            tcp = new TcpClient("localhost", 8044); // Connect to a custom TABS socket with the hardcoded port 8044
+            tcp = new TcpClient("localhost", IsElevated ? 8046 : 8044); // Connect to a custom TABS socket with the hardcoded port 8044/8046: DEBUG PORT START WITH ADMIN!!!
             tcpThread = new Thread(() => TCPReceiver());
             tcpThread.Start();
         }
@@ -73,7 +70,7 @@ namespace TABS_Multiplayer_UI
                 waitPanel.Visible = false;
             } else if(!waitPanel.Visible)
             {
-                this.Close(); // Exit this UI after a disconnect of TABS
+                Environment.Exit(0); // Exit this UI after a disconnect of TABS
             }
         }
 
