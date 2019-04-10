@@ -12,6 +12,7 @@ namespace TABS_Multiplayer_UI
     public partial class Form1 : Form
     {
         public static bool DEBUG = true; // Debug Mode
+        ScreenshareForm screenshareForm;
 
         public Form1()
         {
@@ -25,7 +26,18 @@ namespace TABS_Multiplayer_UI
                 waitPanel.Dock = DockStyle.Fill; // Make waitPanel visible on start
                 waitPanel.BringToFront();
             }
+            screenshareForm = new ScreenshareForm();
+            screenshareForm.Show();
         }
 
+        private void button1_Click(object sender, EventArgs e) // Host Button
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e) // Connect Button
+        {
+
+        }
     }
 }
