@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 
 namespace TABS_Multiplayer
@@ -11,8 +12,9 @@ namespace TABS_Multiplayer
     {
         private static TcpListener tcpServer, uiServer;
         private static TcpClient tcpClient, uiClient;
-        private static Thread uiTcpThread, serverTcpThread;
+        private static Thread uiTcpThread, tcpThread;
         private static BinaryWriter tcpWriter, uiWriter;
+        private static bool isServer = true; // Used to identify the status
 
         public static void Init()
         {
@@ -41,11 +43,13 @@ namespace TABS_Multiplayer
 
                         if(newData.StartsWith("HOSTNOW")) // Unbelievably messy code for receiving commands (somebody else can improve it :)) )
                         {
-                            serverTcpThread = new Thread(() => ListenServer());
-                            serverTcpThread.Start();
+                            tcpThread = new Thread(() => ListenServer());
+                            tcpThread.Start();
                         } else if(newData.StartsWith("CONNECT|"))
                         {
                             tcpClient.Connect(newData.Split('|')[1], 8042); // Connect to ip with hardcoded port
+                            tcpThread = new Thread(() => ConnectClient());
+                            tcpThread.Start();
                         }
                     }
                 }
@@ -60,11 +64,12 @@ namespace TABS_Multiplayer
             }
         }
 
-        private static void ListenServer()
+        private void ListenServer()
         {
             tcpServer.Start();
             tcpClient = tcpServer.AcceptTcpClient(); // Wait for an opponent
 
+            WriteToUI(StrToByte("SHOWSAND"));
             using (NetworkStream nStream = uiClient.GetStream()) // Get the stream
             {
                 using (BinaryReader reader = new BinaryReader(nStream)) // Read it
@@ -74,9 +79,24 @@ namespace TABS_Multiplayer
                     while (true) // Permanently try to read
                     {
                         string newData = reader.ReadString();
+
+                        if(isServer)
+                        {
+
+                        } else
+                        {
+
+                        }
                     }
                 }
             }
+        }
+
+        private void ConnectClient()
+        {
+            ListenServer();
+            tcpServer.Stop();
+            isServer = false;
         }
 
         private void WriteToOpponent(byte[] content)
@@ -95,6 +115,15 @@ namespace TABS_Multiplayer
         public static TcpListener getTcpServer()
         {
             return tcpServer;
+        }
+
+        private static byte[] StrToByte(string str)
+        {
+            return Encoding.UTF8.GetBytes(str);
+        }
+        private static string ByteToStr(byte[] bytes)
+        {
+            return Encoding.UTF8.GetString(bytes);
         }
     }
 }

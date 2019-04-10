@@ -83,6 +83,11 @@ namespace TABS_Multiplayer_UI
                     while (true) // Permanently try to read
                     {
                         string newData = reader.ReadString();
+
+                        if(newData.Equals("SHOWSAND"))
+                        {
+                            Invoke(() => { MessageBox.Show("You can now start the Sandbox", "Connected!"); });
+                        }
                     }
                 }
             }
@@ -104,6 +109,11 @@ namespace TABS_Multiplayer_UI
         private static string ByteToStr(byte[] bytes)
         {
             return Encoding.UTF8.GetString(bytes);
+        }
+
+        public void Invoke(Action action)
+        {
+            this.Invoke((Delegate)action);
         }
     }
 }
