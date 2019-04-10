@@ -362,6 +362,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GlobalSettingsHandlerModifier.cs" />
+    <Compile Include="MonoCustomAttribs.cs" />
     <Compile Include="SocketConnection.cs" />
     <Compile Include="TABSAnalyticsModifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -38,7 +38,7 @@ namespace TABS_Multiplayer_UI
 
         private void hostBtn_Click(object sender, EventArgs e) // Host Button
         {
-
+            
         }
 
         private void connectBtn_Click(object sender, EventArgs e) // Connect Button
