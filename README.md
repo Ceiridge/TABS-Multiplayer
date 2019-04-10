@@ -3,6 +3,8 @@ A multiplayer mod for the Totally Accurate Battle Simulator
 
 **Warning:** This mod is very unstable and may contain a lot of bugs. The game experience might also not correspond to your expectations.
 
+Special thanks to [MonoMod](https://github.com/0x0ade/MonoMod)
+
 # How To Install
 1. Close TABS
 1. Locate your TABS folder (Steam->TABS->Properties->Files->Locate Files)
