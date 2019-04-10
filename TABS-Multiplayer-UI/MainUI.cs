@@ -50,8 +50,10 @@ namespace TABS_Multiplayer_UI
         {
             if(tcp.Connected) // If connected to TABS
             {
-                tcpWaiter.Stop(); // Stop timer
                 waitPanel.Visible = false;
+            } else if(!waitPanel.Visible)
+            {
+                this.Close(); // Exit this UI after a disconnect of TABS
             }
         }
     }
