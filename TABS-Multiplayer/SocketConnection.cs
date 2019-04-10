@@ -56,20 +56,21 @@ namespace TABS_Multiplayer
             }
         }
 
-        private void WriteToUI(byte[] content)
+        private static void WriteToUI(string content)
         {
             if (uiClient.Connected)
             {
                 uiWriter.Write(content);
+                uiWriter.Flush();
             }
         }
 
-        private void ListenServer()
+        private static void ListenServer()
         {
             tcpServer.Start();
             tcpClient = tcpServer.AcceptTcpClient(); // Wait for an opponent
 
-            WriteToUI(StrToByte("SHOWSAND"));
+            WriteToUI("SHOWSAND");
             using (NetworkStream nStream = uiClient.GetStream()) // Get the stream
             {
                 using (BinaryReader reader = new BinaryReader(nStream)) // Read it
@@ -92,18 +93,19 @@ namespace TABS_Multiplayer
             }
         }
 
-        private void ConnectClient()
+        private static void ConnectClient()
         {
             ListenServer();
             tcpServer.Stop();
             isServer = false;
         }
 
-        private void WriteToOpponent(byte[] content)
+        private static void WriteToOpponent(string content)
         {
             if (tcpClient.Connected)
             {
                 tcpWriter.Write(content);
+                tcpWriter.Flush();
             }
         }
 

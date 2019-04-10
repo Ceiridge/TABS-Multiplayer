@@ -18,6 +18,8 @@ namespace TABS_Multiplayer_UI
         public static bool DEBUG = true; // Debug Mode
         public static TcpClient tcp;
         public static BinaryWriter uiWriter;
+        public static Thread tcpThread;
+        public static MainUI instance;
 
         ScreenshareForm screenshareForm;
 
@@ -28,6 +30,7 @@ namespace TABS_Multiplayer_UI
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            instance = this;
             if (!DEBUG)
             {
                 waitPanel.Dock = DockStyle.Fill; // Make waitPanel visible on start
@@ -39,11 +42,13 @@ namespace TABS_Multiplayer_UI
 
             Thread.Sleep(1500); // Sleep to make sure the socket's started
             tcp = new TcpClient("localhost", 8044); // Connect to a custom TABS socket with the hardcoded port 8044
+            tcpThread = new Thread(() => TCPReceiver());
+            tcpThread.Start();
         }
 
         private void hostBtn_Click(object sender, EventArgs e) // Host Button
         {
-            WriteToTABS(StrToByte("HOSTNOW")); // Send the host command
+            WriteToTABS("HOSTNOW"); // Send the host command
             button1.Enabled = false; // Disable the host btn
             button2.Enabled = false; // Disable the connection btn
         }
@@ -52,7 +57,7 @@ namespace TABS_Multiplayer_UI
         {
             try
             {
-                WriteToTABS(StrToByte("CONNECT|" + IPAddress.Parse(textBox1.Text).ToString())); // Send connect cmd + ip with parse checking
+                WriteToTABS("CONNECT|" + IPAddress.Parse(textBox1.Text).ToString()); // Send connect cmd + ip with parse checking
                 button1.Enabled = false; // Disable the host btn
                 button2.Enabled = false; // Disable the connection btn
             } catch(Exception)
@@ -72,7 +77,7 @@ namespace TABS_Multiplayer_UI
             }
         }
 
-        private void TCPReceiver()
+        private static void TCPReceiver()
         {
             using (NetworkStream nStream = tcp.GetStream()) // Get the stream
             {
@@ -86,18 +91,19 @@ namespace TABS_Multiplayer_UI
 
                         if(newData.Equals("SHOWSAND"))
                         {
-                            Invoke(() => { MessageBox.Show("You can now start the Sandbox", "Connected!"); });
+                            instance.Invoke(() => { MessageBox.Show("You can now start the Sandbox", "Connected!"); });
                         }
                     }
                 }
             }
         }
 
-        private void WriteToTABS(byte[] content)
+        private void WriteToTABS(string content)
         {
             if (tcp.Connected)
             {
                 uiWriter.Write(content);
+                uiWriter.Flush();
             }
         }
 
