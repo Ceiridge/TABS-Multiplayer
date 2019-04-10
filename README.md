@@ -13,7 +13,12 @@ Special thanks to [MonoMod](https://github.com/0x0ade/MonoMod)
 1. Run `modify.bat`
 1. Copy back the `Assembly-CSharp.dll` by replacing it in the Steam folder
 1. Copy the `TABS-Multiplayer-UI.exe` into the game's root directory
+1. Run `TABS-Multiplayer-UI.exe` to make sure, no AV interferes with the program, then close it again!
 1. Run the game
+
+# How To Update
+1. Uninstall
+1. Install
 
 # How To Uninstall
 1. Close TABS
