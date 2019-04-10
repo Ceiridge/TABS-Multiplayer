@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace TABS_Multiplayer_UI
@@ -33,7 +34,8 @@ namespace TABS_Multiplayer_UI
             screenshareForm = new ScreenshareForm();
             screenshareForm.Show();
 
-            tcp = new TcpClient("localhost", 8043); // Connect to a custom TABS socket with the hardcoded port 8043
+            Thread.Sleep(1500); // Sleep to make sure the socket's started
+            tcp = new TcpClient("localhost", 8044); // Connect to a custom TABS socket with the hardcoded port 8044
         }
 
         private void hostBtn_Click(object sender, EventArgs e) // Host Button
@@ -55,6 +57,11 @@ namespace TABS_Multiplayer_UI
             {
                 this.Close(); // Exit this UI after a disconnect of TABS
             }
+        }
+
+        private void TCPReceiver()
+        {
+
         }
     }
 }

@@ -17,7 +17,7 @@ namespace TABS_Multiplayer
         public static void Init()
         {
             tcpServer = new TcpListener(IPAddress.Any, 8042); // TODO: Change the port if you want
-            uiServer = new TcpListener(IPAddress.Parse("127.0.0.1"), 8043); // Listen for the UI client locally (Port: 8043)
+            uiServer = new TcpListener(IPAddress.Parse("127.0.0.1"), 8044); // Listen for the UI client locally (Port: 8044)
             tcpClient = new TcpClient();
 
             uiTcpThread = new Thread(() => ListenUI());
@@ -26,8 +26,9 @@ namespace TABS_Multiplayer
 
         private static void ListenUI()
         {
+            uiServer.Start();
             uiClient = uiServer.AcceptTcpClient(); // Wait and accept ui client
-            
+
             using(NetworkStream nStream = uiClient.GetStream()) // Get the stream
             {
                 using (BinaryReader reader = new BinaryReader(nStream)) // Read it
@@ -52,6 +53,7 @@ namespace TABS_Multiplayer
 
         private static void ListenServer()
         {
+            tcpServer.Start();
             tcpClient = tcpServer.AcceptTcpClient(); // Wait for an opponent
 
             using (NetworkStream nStream = uiClient.GetStream()) // Get the stream
