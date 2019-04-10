@@ -11,6 +11,8 @@ namespace TABS_Multiplayer_UI
 {
     public partial class Form1 : Form
     {
+        public static bool DEBUG = true; // Debug Mode
+
         public Form1()
         {
             InitializeComponent();
@@ -18,8 +20,12 @@ namespace TABS_Multiplayer_UI
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            waitPanel.Dock = DockStyle.Fill; // Make waitPanel visible on start
-            waitPanel.BringToFront();
+            if (!DEBUG)
+            {
+                waitPanel.Dock = DockStyle.Fill; // Make waitPanel visible on start
+                waitPanel.BringToFront();
+            }
         }
+
     }
 }
