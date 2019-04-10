@@ -36,10 +36,9 @@
             // waitPanel
             // 
             this.waitPanel.Controls.Add(this.label1);
-            this.waitPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.waitPanel.Location = new System.Drawing.Point(0, 0);
+            this.waitPanel.Location = new System.Drawing.Point(-50, 0);
             this.waitPanel.Name = "waitPanel";
-            this.waitPanel.Size = new System.Drawing.Size(702, 373);
+            this.waitPanel.Size = new System.Drawing.Size(1, 1);
             this.waitPanel.TabIndex = 0;
             // 
             // label1
@@ -64,8 +63,10 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TABS-Multiplayer UI";
             this.TopMost = true;
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.waitPanel.ResumeLayout(false);
             this.waitPanel.PerformLayout();
             this.ResumeLayout(false);
