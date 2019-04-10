@@ -19,6 +19,7 @@ namespace TABS_Multiplayer_UI
         private void Form1_Load(object sender, EventArgs e)
         {
             waitPanel.Dock = DockStyle.Fill; // Make waitPanel visible on start
+            waitPanel.BringToFront();
         }
     }
 }

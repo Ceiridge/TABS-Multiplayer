@@ -30,7 +30,11 @@
         {
             this.waitPanel = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
+            this.tabCtr = new System.Windows.Forms.TabControl();
+            this.connectPage = new System.Windows.Forms.TabPage();
+            this.managePage = new System.Windows.Forms.TabPage();
             this.waitPanel.SuspendLayout();
+            this.tabCtr.SuspendLayout();
             this.SuspendLayout();
             // 
             // waitPanel
@@ -50,12 +54,44 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "TABS not detected yet";
             // 
+            // tabCtr
+            // 
+            this.tabCtr.Controls.Add(this.connectPage);
+            this.tabCtr.Controls.Add(this.managePage);
+            this.tabCtr.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabCtr.Location = new System.Drawing.Point(0, 0);
+            this.tabCtr.Name = "tabCtr";
+            this.tabCtr.SelectedIndex = 0;
+            this.tabCtr.Size = new System.Drawing.Size(702, 373);
+            this.tabCtr.TabIndex = 1;
+            // 
+            // connectPage
+            // 
+            this.connectPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(19)))), ((int)(((byte)(19)))), ((int)(((byte)(19)))));
+            this.connectPage.Location = new System.Drawing.Point(4, 30);
+            this.connectPage.Name = "connectPage";
+            this.connectPage.Padding = new System.Windows.Forms.Padding(3);
+            this.connectPage.Size = new System.Drawing.Size(694, 339);
+            this.connectPage.TabIndex = 0;
+            this.connectPage.Text = "Connect";
+            // 
+            // managePage
+            // 
+            this.managePage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(19)))), ((int)(((byte)(19)))), ((int)(((byte)(19)))));
+            this.managePage.Location = new System.Drawing.Point(4, 30);
+            this.managePage.Name = "managePage";
+            this.managePage.Padding = new System.Windows.Forms.Padding(3);
+            this.managePage.Size = new System.Drawing.Size(694, 339);
+            this.managePage.TabIndex = 1;
+            this.managePage.Text = "Manage";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(19)))), ((int)(((byte)(19)))), ((int)(((byte)(19)))));
             this.ClientSize = new System.Drawing.Size(702, 373);
+            this.Controls.Add(this.tabCtr);
             this.Controls.Add(this.waitPanel);
             this.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ForeColor = System.Drawing.Color.White;
@@ -69,6 +105,7 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.waitPanel.ResumeLayout(false);
             this.waitPanel.PerformLayout();
+            this.tabCtr.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -77,6 +114,9 @@
 
         private System.Windows.Forms.Panel waitPanel;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TabControl tabCtr;
+        private System.Windows.Forms.TabPage connectPage;
+        private System.Windows.Forms.TabPage managePage;
     }
 }
 
