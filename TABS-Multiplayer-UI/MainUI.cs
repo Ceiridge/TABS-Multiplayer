@@ -29,6 +29,7 @@ namespace TABS_Multiplayer_UI
                 waitPanel.Dock = DockStyle.Fill; // Make waitPanel visible on start
                 waitPanel.BringToFront();
             }
+
             screenshareForm = new ScreenshareForm();
             screenshareForm.Show();
 

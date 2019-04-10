@@ -11,15 +11,9 @@ namespace TABS_Multiplayer
         private static TcpListener tcpServer, uiServer;
         private static TcpClient tcpClient;
         private static Thread uiTcpThread;
-           
-        private static bool inited = false; // Don't execute the init twice
-
 
         public static void Init()
         {
-            if (inited) return;
-            inited = true;
-
             tcpServer = new TcpListener(IPAddress.Any, 8042); // TODO: Change the port if you want
             uiServer = new TcpListener(IPAddress.Parse("127.0.0.1"), 8043); // Listen for the UI client locally (Port: 8043)
             tcpClient = new TcpClient();
