@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -9,8 +10,9 @@ namespace TABS_Multiplayer
     public class SocketConnection
     {
         private static TcpListener tcpServer, uiServer;
-        private static TcpClient tcpClient;
+        private static TcpClient tcpClient, uiClient;
         private static Thread uiTcpThread;
+        private static BinaryWriter tcpWriter, uiWriter;
 
         public static void Init()
         {
@@ -24,7 +26,54 @@ namespace TABS_Multiplayer
 
         private static void ListenUI()
         {
-            TcpClient uiClient = uiServer.AcceptTcpClient(); // Wait and accept ui client
+            uiClient = uiServer.AcceptTcpClient(); // Wait and accept ui client
+            
+            using(NetworkStream nStream = uiClient.GetStream()) // Get the stream
+            {
+                using (BinaryReader reader = new BinaryReader(nStream)) // Read it
+                {
+                    uiWriter = new BinaryWriter(nStream); // Set the writer
+
+                    while(true) // Permanently try to read
+                    {
+                        string newData = reader.ReadString();
+                    }
+                }
+            }
+        }
+
+        private void WriteToUI(byte[] content)
+        {
+            if (uiClient.Connected)
+            {
+                uiWriter.Write(content);
+            }
+        }
+
+        private static void ListenServer()
+        {
+            tcpClient = tcpServer.AcceptTcpClient(); // Wait for an opponent
+
+            using (NetworkStream nStream = uiClient.GetStream()) // Get the stream
+            {
+                using (BinaryReader reader = new BinaryReader(nStream)) // Read it
+                {
+                    tcpWriter = new BinaryWriter(nStream); // Set the writer
+
+                    while (true) // Permanently try to read
+                    {
+                        string newData = reader.ReadString();
+                    }
+                }
+            }
+        }
+
+        private void WriteToOpponent(byte[] content)
+        {
+            if (tcpClient.Connected)
+            {
+                tcpWriter.Write(content);
+            }
         }
 
         public static TcpClient getTcpClient()
