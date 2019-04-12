@@ -16,6 +16,17 @@ Special thanks to [MonoMod](https://github.com/0x0ade/MonoMod)
 1. Run `TABS-Multiplayer-UI.exe` to make sure, no AV interferes with the program, then close it again!
 1. Run the game
 
+# How To Play
+1. Open TABS
+1. Click `OK` on the welcome message and wait through the loading screens
+1. If you want to be the host: Port-forward the port 8042 in your router settings; As the opponent, you need to connect to the WAN ip of the host (https://checkip.amazonaws.com) (needs to be opened in the host's browser)
+1. As a hoster, press `Host`, as an opponent, press `Connect` in the multiplayer UI
+1. Make sure not to play in fullscreen
+1. Close the `You can now start a sandbox game` dialog (as the host)
+1. As the host, start a sandbox game with your favorite map. The opponent will load the same one
+1. Place your units until the host presses `Start`
+1. A screenshare-window will overlap the TABS window that streams the host's TABS window (This is why I recommend that the player with the best internet connection should be the host)
+
 # How To Update
 1. Uninstall
 1. Install
