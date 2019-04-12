@@ -89,6 +89,9 @@ namespace TABS_Multiplayer_UI
                         if(newData.Equals("SHOWSAND"))
                         {
                             instance.Invoke(() => { MessageBox.Show("You can now start the Sandbox", "Connected!"); });
+                        } else if (newData.StartsWith("SHOWMSG"))
+                        {
+                            instance.Invoke(() => { MessageBox.Show(newData.Split('|')[1], "Message from TABS"); });
                         }
                     }
                 }

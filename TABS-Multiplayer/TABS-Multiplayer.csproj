@@ -372,6 +372,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="TABSBooterModifier.cs" />
+    <Compile Include="TABSSceneManagerModifier.cs" />
+    <Compile Include="TextMeshProUGUIModifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Settings.settings">

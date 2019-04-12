@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Security.Principal;
 
 namespace TABS_Multiplayer
 {
@@ -65,9 +64,9 @@ namespace TABS_Multiplayer
             }
         }
 
-        private static void WriteToUI(string content)
+        public static void WriteToUI(string content)
         {
-            if (uiClient.Connected)
+            if (uiClient != null && uiClient.Connected)
             {
                 uiWriter.Write(content);
                 uiWriter.Flush();
@@ -112,9 +111,9 @@ namespace TABS_Multiplayer
             isServer = false;
         }
 
-        private static void WriteToOpponent(string content)
+        public static void WriteToOpponent(string content)
         {
-            if (tcpClient.Connected)
+            if (tcpClient != null && tcpClient.Connected)
             {
                 tcpWriter.Write(content);
                 tcpWriter.Flush();
@@ -125,10 +124,13 @@ namespace TABS_Multiplayer
         {
             return tcpClient;
         }
-
         public static TcpListener getTcpServer()
         {
             return tcpServer;
+        }
+        public static bool GetIsServer()
+        {
+            return isServer;
         }
 
         private static byte[] StrToByte(string str)
