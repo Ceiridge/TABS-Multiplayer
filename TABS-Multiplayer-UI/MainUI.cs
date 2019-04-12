@@ -18,6 +18,8 @@ namespace TABS_Multiplayer_UI
         public static Thread tcpThread;
         public static MainUI instance;
 
+        private static bool isIngame = false;
+
         ScreenshareForm screenshareForm;
 
         public MainUI()
@@ -84,14 +86,18 @@ namespace TABS_Multiplayer_UI
 
                     while (true) // Permanently try to read
                     {
-                        string newData = reader.ReadString();
+                        string newData = reader.ReadString(); // Unbelievably messy code for receiving commands (somebody else can improve it :)) )
 
-                        if(newData.Equals("SHOWSAND"))
+                        if (newData.Equals("SHOWSAND"))
                         {
                             instance.Invoke(() => { MessageBox.Show("You can now start the Sandbox", "Connected!"); });
                         } else if (newData.StartsWith("SHOWMSG"))
                         {
                             instance.Invoke(() => { MessageBox.Show(newData.Split('|')[1], "Message from TABS"); });
+                        }
+                        else if (newData.StartsWith("INGAME"))
+                        {
+                            isIngame = bool.Parse(newData.Split('|')[1]); // Change the ingame status
                         }
                     }
                 }
