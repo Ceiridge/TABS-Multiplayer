@@ -17,6 +17,14 @@ namespace TABS_Multiplayer
         private static BinaryWriter tcpWriter, uiWriter;
         private static bool isServer = true; // Used to identify the status
 
+        // Command related vars Start
+
+        public static volatile bool switchScene = false, switchMap = false;
+        public static volatile string newScene = "";
+        public static volatile int newMap = 0;
+
+        // Command related vars End
+
         public static void Init()
         {
             tcpServer = new TcpListener(IPAddress.Any, 8042); // TODO: Change the port if you want
@@ -79,14 +87,15 @@ namespace TABS_Multiplayer
             {
                 tcpServer.Start();
                 tcpClient = tcpServer.AcceptTcpClient(); // Wait for an opponent
+                WriteToUI("SHOWSAND"); // Show the sandbox message box
             }
 
-            WriteToUI("SHOWSAND");
             using (NetworkStream nStream = tcpClient.GetStream()) // Get the stream
             {
                 using (BinaryReader reader = new BinaryReader(nStream)) // Read it
                 {
                     tcpWriter = new BinaryWriter(nStream); // Set the writer
+                    WriteToOpponent("HELLO");
 
                     while (true) // Permanently try to read
                     {
@@ -97,7 +106,15 @@ namespace TABS_Multiplayer
 
                         } else
                         {
-
+                            if(newData.StartsWith("LOADSCENE") && false) // Disable loadscene for now
+                            {
+                                newScene = newData.Split('|')[1];
+                                switchScene = true; // Tell the client to switch the scene
+                            } else if (newData.StartsWith("LOADMAP"))
+                            {
+                                newMap = int.Parse(newData.Split('|')[1]);
+                                switchMap = true; // Tell the client to switch the map
+                            }
                         }
                     }
                 }
@@ -106,9 +123,9 @@ namespace TABS_Multiplayer
 
         private static void ConnectClient()
         {
-            ListenServer();
-            tcpServer.Stop();
             isServer = false;
+            tcpServer.Stop();
+            ListenServer();
         }
 
         public static void WriteToOpponent(string content)

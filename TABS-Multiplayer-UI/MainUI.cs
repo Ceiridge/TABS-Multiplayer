@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -39,7 +40,6 @@ namespace TABS_Multiplayer_UI
             screenshareForm = new ScreenshareForm();
             screenshareForm.Show();
 
-            Thread.Sleep(1500); // Sleep to make sure the socket's started
             tcp = new TcpClient("localhost", IsElevated ? 8046 : 8044); // Connect to a custom TABS socket with the hardcoded port 8044/8046: DEBUG PORT START WITH ADMIN!!!
             tcpThread = new Thread(() => TCPReceiver());
             tcpThread.Start();
@@ -98,6 +98,10 @@ namespace TABS_Multiplayer_UI
                         else if (newData.StartsWith("INGAME"))
                         {
                             isIngame = bool.Parse(newData.Split('|')[1]); // Change the ingame status
+                        }
+                        else if (newData.StartsWith("DEBUG"))
+                        {
+                            Console.WriteLine(newData.Split('|')[1]); // Print out debug text
                         }
                     }
                 }

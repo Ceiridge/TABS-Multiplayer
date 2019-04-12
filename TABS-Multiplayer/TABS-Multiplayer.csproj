@@ -373,7 +373,7 @@
     </Compile>
     <Compile Include="TABSBooterModifier.cs" />
     <Compile Include="TABSSceneManagerModifier.cs" />
-    <Compile Include="TextMeshProUGUIModifier.cs" />
+    <Compile Include="TickCoroutine.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Settings.settings">
