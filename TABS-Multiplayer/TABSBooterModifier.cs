@@ -1,8 +1,7 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using TABS_Multiplayer;
 
-#pragma warning disable CS0626
+#pragma warning disable CS0626 // Disable that annoying style warning
 class patch_TABSBooter : TABSBooter
 {
     private static bool inited = false; // Don't execute the init twice
