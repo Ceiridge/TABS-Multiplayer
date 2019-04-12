@@ -10,7 +10,6 @@ class patch_TABSSceneManager : TABSSceneManager
     {
         if(scene.name == "GameScene") // Check for the start of the game scene
         {
-
             SocketConnection.WriteToUI("INGAME|true"); // Tell to UI that the player's ingame
         } else if(scene.name == "MainMenu")
         {

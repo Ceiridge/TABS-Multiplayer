@@ -50,7 +50,7 @@
             this.Name = "ScreenshareForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.Text = "ScreenshareForm";
+            this.Text = "Host\'s TABS - Live";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScreenshareForm_FormClosing);
             this.Load += new System.EventHandler(this.ScreenshareForm_Load);

@@ -19,7 +19,7 @@ namespace TABS_Multiplayer_UI
         public static Thread tcpThread;
         public static MainUI instance;
 
-        private static bool isIngame = false;
+        private static bool isIngame = true;
 
         ScreenshareForm screenshareForm;
 
@@ -47,6 +47,11 @@ namespace TABS_Multiplayer_UI
 
         private void hostBtn_Click(object sender, EventArgs e) // Host Button
         {
+            if(isIngame)
+            {
+                MessageBox.Show("Please stay in the main menu before starting a session!", "Error"); // Prevent the user from hosting/connecting while being ingame
+                return;
+            }
             WriteToTABS("HOSTNOW"); // Send the host command
             button1.Enabled = false; // Disable the host btn
             button2.Enabled = false; // Disable the connection btn
@@ -54,6 +59,11 @@ namespace TABS_Multiplayer_UI
 
         private void connectBtn_Click(object sender, EventArgs e) // Connect Button
         {
+            if (isIngame)
+            {
+                MessageBox.Show("Please stay in the main menu before starting a session!", "Error");
+                return;
+            }
             try
             {
                 WriteToTABS("CONNECT|" + IPAddress.Parse(textBox1.Text).ToString()); // Send connect cmd + ip with parse checking

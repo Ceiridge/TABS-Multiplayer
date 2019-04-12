@@ -1,0 +1,1 @@
+This is the template for building a release. Make sure to include the .mm.dll file in the MonoMod folder!
