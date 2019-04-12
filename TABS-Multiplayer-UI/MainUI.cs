@@ -12,7 +12,7 @@ namespace TABS_Multiplayer_UI
 {
     public partial class MainUI : Form
     {
-        static bool IsElevated => new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+        static bool IsElevated => new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator); // Used to detect if it's started with admin rights (for modders in order to start two instances)
         public static bool DEBUG = true; // Debug Mode
         public static TcpClient tcp;
         public static BinaryWriter uiWriter;

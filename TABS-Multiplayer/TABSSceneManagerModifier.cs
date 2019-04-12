@@ -18,7 +18,7 @@ class patch_TABSSceneManager : TABSSceneManager
         }
 
         //SocketConnection.WriteToUI("SHOWMSG|Loading scene " + scene.name); // Debug
-        SocketConnection.WriteToUI("DEBUG|Loading new scene"); // Debug
+        //SocketConnection.WriteToUI("DEBUG|Loading new scene"); // Debug
         orig_OnSceneLoaded(scene, mode); // Call original function
     }
 
