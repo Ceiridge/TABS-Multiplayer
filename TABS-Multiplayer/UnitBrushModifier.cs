@@ -57,8 +57,8 @@ namespace Landfall.TABS.UnitPlacement
         public override bool CanRemove(Unit unit)
         {
             bool isServer = SocketConnection.GetIsServer();
-            return ((isServer && !SocketConnection.getTcpClient().Connected) || unit.Team == (isServer ? Team.Red : Team.Blue)) 
-                && !SocketConnection.gameStarted;
+            return ((isServer && !SocketConnection.getTcpClient().Connected) 
+                || (unit.Team == (isServer ? Team.Red : Team.Blue)) && !SocketConnection.gameStarted);
             // Make sure that each client can only remove on their position if it's connected
         }
 
@@ -79,7 +79,7 @@ namespace Landfall.TABS.UnitPlacement
             bool isServer = SocketConnection.GetIsServer();
             return (base.CanPlace(unitToSpawn, team, ref position) 
                 && ((isServer && !SocketConnection.getTcpClient().Connected) ? true :
-                (GetTeamAreaAtPosition(position) == (isServer ? Team.Red : Team.Blue)))) && !SocketConnection.gameStarted;
+                (GetTeamAreaAtPosition(position) == (isServer ? Team.Red : Team.Blue) && !SocketConnection.gameStarted)));
             // Make sure that each client can only place on their position if it's connected
         }
     }

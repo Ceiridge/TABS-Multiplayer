@@ -43,8 +43,8 @@ namespace Landfall.TABS.Budget.Wallets
 
         private void UpdateBudget()
         {
-            infinite = base.Budget == -1 || (SocketConnection.maxBudget <= 0 && SocketConnection.getTcpClient().Connected);
-            // Make it infinite if it's connected and 0
+            infinite = base.Budget == -1 || SocketConnection.maxBudget <= 0;
+            // Make it infinite if it's 0
         }
     }
 }
