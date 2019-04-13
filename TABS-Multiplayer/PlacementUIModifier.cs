@@ -5,6 +5,8 @@ namespace Landfall.TABS
 {
     class patch_PlacementUI : PlacementUI
     {
+        private PlacementUI.ClearButtonDelegate m_onClickedClearButton; // Expose private field
+
         public extern bool orig_CanStartGame();
         public bool CanStartGame()
         {
@@ -34,6 +36,11 @@ namespace Landfall.TABS
         {
             orig_ClearBlue();
             SocketConnection.WriteToOpponent("CLEAR|false");
+        }
+
+        public PlacementUI.ClearButtonDelegate GetOnClickedClear() // Getter for reflection access
+        {
+            return this.m_onClickedClearButton;
         }
     }
 }

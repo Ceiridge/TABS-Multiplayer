@@ -56,15 +56,20 @@ namespace TABS_Multiplayer
                     } else if(newData.StartsWith("CLEAR"))
                     {
                         bool red = bool.Parse(newData.Split('|')[1]);
+                        Team team = red ? Team.Red : Team.Blue;
                         PlacementUI pui = GameObject.FindObjectOfType<PlacementUI>(); // Get the placement UI
 
-                        if (red)
-                            pui.ClearRed();
-                        else
-                            pui.ClearBlue(); // Clear the right area
+                        // Clear the right area without triggering an echo
+                        UnitLayoutManager.ClearTeam(team);
+                        GetClearButtonDelegate(pui)(team);
                     }
                 }
             }
+        }
+
+        private static PlacementUI.ClearButtonDelegate GetClearButtonDelegate(PlacementUI pui)
+        {
+            return (PlacementUI.ClearButtonDelegate)typeof(PlacementUI).GetMethod("GetOnClickedClear").Invoke(pui, null);
         }
 
         private static Unit FindClosestUnit(Vector3 pos)
