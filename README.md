@@ -6,6 +6,7 @@ A multiplayer mod for the *Totally Accurate Battle Simulator*
 Special thanks to [MonoMod](https://github.com/0x0ade/MonoMod)
 
 # How To Install
+#### (You cannot download it yet, because it's not released yet (lack of features))
 1. Close TABS
 1. Download the latest release zip and extract it in a new folder somewhere
 1. Locate your TABS folder (Steam->TABS->Properties->Files->Locate Files)
