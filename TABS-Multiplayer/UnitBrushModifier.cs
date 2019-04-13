@@ -26,10 +26,13 @@ namespace Landfall.TABS.UnitPlacement
         public new void PlaceUnit(UnitBlueprint blueprint, Team team, Vector3 position, bool costsBudget = true)
         {
             orig_PlaceUnit(blueprint, team, position, costsBudget);
-            SocketConnection.SetCulture();
-            SocketConnection.WriteToOpponent("SPAWNUNIT|" + blueprint.Entity.Name + "|" + team.ToString() +
-                "|" + position.ToString("F5"));
-            // Send a spawn command
+            if (costsBudget) // Don't send the unit when it's placed by the resetter
+            {
+                SocketConnection.SetCulture();
+                SocketConnection.WriteToOpponent("SPAWNUNIT|" + blueprint.Entity.Name + "|" + team.ToString() +
+                    "|" + position.ToString("F5"));
+                // Send a spawn command
+            }
         }
 
         public extern void orig_RemoveUnit(Unit unit, Team team);
