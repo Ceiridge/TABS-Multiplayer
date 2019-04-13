@@ -361,6 +361,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameStateManagerModifier.cs" />
     <Compile Include="GlobalSettingsHandlerModifier.cs" />
     <Compile Include="MonoCustomAttribs.cs" />
     <Compile Include="PlacementUIModifier.cs" />

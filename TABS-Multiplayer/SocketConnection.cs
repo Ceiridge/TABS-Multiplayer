@@ -25,6 +25,8 @@ namespace TABS_Multiplayer
         public static volatile string newScene = "";
         public static volatile int newMap = 0;
         public static ConcurrentQueue<string> tickCommands = new ConcurrentQueue<string>();
+        public static bool gameStarted = false;
+
         // Command related vars End
 
         public static void Init()
@@ -115,7 +117,9 @@ namespace TABS_Multiplayer
                             {
                                 newMap = int.Parse(newData.Split('|')[1]);
                                 switchMap = true; // Tell the client to switch the map
-                                
+                            } else if(newData.StartsWith("GSTARTED"))
+                            {
+                                gameStarted = bool.Parse(newData.Split('|')[1]); // Set the game started var
                             }
                         }
                         if (newData.StartsWith("SPAWNUNIT") || newData.StartsWith("REMOVEUNIT") || newData.StartsWith("CLEAR"))
