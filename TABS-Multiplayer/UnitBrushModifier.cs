@@ -26,6 +26,7 @@ namespace Landfall.TABS.UnitPlacement
         public new void PlaceUnit(UnitBlueprint blueprint, Team team, Vector3 position, bool costsBudget = true)
         {
             orig_PlaceUnit(blueprint, team, position, costsBudget);
+            SocketConnection.SetCulture();
             SocketConnection.WriteToOpponent("SPAWNUNIT|" + blueprint.Entity.Name + "|" + team.ToString() +
                 "|" + position.ToString("F5"));
             // Send a spawn command
@@ -35,8 +36,14 @@ namespace Landfall.TABS.UnitPlacement
         public new void RemoveUnit(Unit unit, Team team)
         {
             orig_RemoveUnit(unit, team);
+            SocketConnection.SetCulture();
             SocketConnection.WriteToOpponent("REMOVEUNIT|" + unit.transform.position.ToString("F5") + "|" + team.ToString());
             // Send a remove command with its position (it acts like an inaccurate GUID)
+        }
+
+        public BrushBehaviourBase GetBrushBehaviour()
+        {
+            return m_brushBehaviour;
         }
     }
 

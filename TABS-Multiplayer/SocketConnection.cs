@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -22,7 +24,7 @@ namespace TABS_Multiplayer
         public static volatile bool switchScene = false, switchMap = false;
         public static volatile string newScene = "";
         public static volatile int newMap = 0;
-
+        public static ConcurrentQueue<string> tickCommands = new ConcurrentQueue<string>();
         // Command related vars End
 
         public static void Init()
@@ -100,8 +102,9 @@ namespace TABS_Multiplayer
                     while (true) // Permanently try to read
                     {
                         string newData = reader.ReadString();
+                        SetCulture();
 
-                        if(isServer)
+                        if (isServer)
                         {
 
                         } else
@@ -116,6 +119,9 @@ namespace TABS_Multiplayer
                                 switchMap = true; // Tell the client to switch the map
                             }
                         }
+                        if (newData.StartsWith("SPAWNUNIT") || newData.StartsWith("REMOVEUNIT"))
+                            tickCommands.Enqueue(newData);
+                        // Add the command to be processed by the tick coroutine
                     }
                 }
             }
@@ -157,6 +163,13 @@ namespace TABS_Multiplayer
         private static string ByteToStr(byte[] bytes)
         {
             return Encoding.UTF8.GetString(bytes);
+        }
+
+        public static void SetCulture() // Set the cultureinfo to one that uses dots instead of commas
+        {
+            CultureInfo ci = (CultureInfo)Thread.CurrentThread.CurrentCulture.Clone();
+            ci.NumberFormat.NumberDecimalSeparator = ".";
+            Thread.CurrentThread.CurrentCulture = ci;
         }
     }
 }
