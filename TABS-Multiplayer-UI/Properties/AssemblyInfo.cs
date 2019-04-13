@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("TABS-Multiplayer UI")]
 [assembly: AssemblyDescription("The user interface for the TABS-Multiplayer mod")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Ceiridge")]
 [assembly: AssemblyProduct("TABS-Multiplayer UI")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCopyright("Ceiridge (GPL-3.0)")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

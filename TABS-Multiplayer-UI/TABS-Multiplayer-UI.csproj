@@ -60,6 +60,7 @@
     <Compile Include="ScreenshareForm.Designer.cs">
       <DependentUpon>ScreenshareForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ScreenshotHandler.cs" />
     <EmbeddedResource Include="MainUI.resx">
       <DependentUpon>MainUI.cs</DependentUpon>
     </EmbeddedResource>

@@ -22,8 +22,10 @@ namespace TABS_Multiplayer
                 waitTime += interval;
                 SocketConnection.SetCulture();
 
-                //if (ScreenshareSender.SetWinHandle())
-                //    ScreenshareSender.GetImageFromWindow().Save("screenschote.png"); // Debug
+                if (SocketConnection.getUIClient().Connected)
+                {
+                    ScreenshareSender.SetWinHandle(); // Send the unity window handle for receiving images
+                }
 
                 if (SocketConnection.switchScene)
                 {

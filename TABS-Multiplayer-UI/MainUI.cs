@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -114,10 +115,17 @@ namespace TABS_Multiplayer_UI
                         {
                             Console.WriteLine(newData.Split('|')[1]); // Print out debug text
                         }
+                        else if (newData.StartsWith("WINH"))
+                        {
+                            ScreenshotHandler.unityWindow = new IntPtr(long.Parse(newData.Split('|')[1])); // Set the handle
+                            //ScreenshotHandler.GetImageFromWindow().Save("screenshot.png"); // Debug
+                        }
                     }
                 }
             }
         }
+
+        
 
         private void WriteToTABS(string content)
         {

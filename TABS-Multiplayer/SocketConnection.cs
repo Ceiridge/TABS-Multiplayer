@@ -169,6 +169,10 @@ namespace TABS_Multiplayer
         {
             return tcpClient;
         }
+        public static TcpClient getUIClient()
+        {
+            return uiClient;
+        }
         public static TcpListener getTcpServer()
         {
             return tcpServer;
