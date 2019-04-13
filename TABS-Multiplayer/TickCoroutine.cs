@@ -38,7 +38,7 @@ namespace TABS_Multiplayer
                 if (map.m_mapIndex == index)
                     return map;
             }
-            return null;
+            return LandfallUnitDatabase.GetDatabase().Maps[0]; // Return the first one if none is found (illegal state)
         }
     }
 }
