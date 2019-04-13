@@ -6,7 +6,6 @@ A multiplayer mod for the *Totally Accurate Battle Simulator*
 Special thanks to [MonoMod](https://github.com/0x0ade/MonoMod)
 
 # How To Install
-#### (You cannot download it yet, because it's not released yet (lack of features))
 1. Close TABS
 1. Download the latest release zip and extract it in a new folder somewhere
 1. Locate your TABS folder (Steam->TABS->Properties->Files->Locate Files)
@@ -15,7 +14,8 @@ Special thanks to [MonoMod](https://github.com/0x0ade/MonoMod)
 1. Open the TABS folder again, then open `TotallyAccurateBattleSimulator_Data`, then open `Managed`
 1. Copy the `Assembly-CSharp.dll` from the folder you created earlier and paste & replace it in the TABS folder you've just navigated to
 1. Copy the `TABS-Multiplayer-UI.exe` from the folder you created earlier into the game's root directory (the folder you opened at the beginning, near the  `TotallyAccurateBattleSimulator.exe`)
-1. Run `TABS-Multiplayer-UI.exe` to make sure, no AV interferes with the program, then close it again! (Especially if you have Avast or Avira and you are experiencing problems, you can add it to the exemptions there)
+1. Run `TABS-Multiplayer-UI.exe` to make sure, no AV interferes with the program, **then close it again!** (Especially if you have Avast or Avira and you are experiencing problems, you can add it to the exemptions there)
+1. Open your advanced firewall settings and add a new inbound rule that allows every TCP 8042 connection
 1. Run the game
 
 # How To Play
