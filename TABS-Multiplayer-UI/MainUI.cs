@@ -19,7 +19,7 @@ namespace TABS_Multiplayer_UI
         public static Thread tcpThread;
         public static MainUI instance;
 
-        private static bool isIngame = true;
+        private static bool isIngame = true, isHost = false;
 
         ScreenshareForm screenshareForm;
 
@@ -55,6 +55,7 @@ namespace TABS_Multiplayer_UI
             WriteToTABS("HOSTNOW"); // Send the host command
             button1.Enabled = false; // Disable the host btn
             button2.Enabled = false; // Disable the connection btn
+            isHost = true;
         }
 
         private void connectBtn_Click(object sender, EventArgs e) // Connect Button
@@ -140,6 +141,17 @@ namespace TABS_Multiplayer_UI
         public void Invoke(Action action)
         {
             this.Invoke((Delegate)action);
+        }
+
+        private void budgetBtn_Click(object sender, EventArgs e)
+        {
+            if(isHost)
+            {
+                WriteToTABS("BUDGET|" + (int)budgetVal.Value);
+            } else
+            {
+                MessageBox.Show("You are not the host!", "Error");
+            }
         }
     }
 }

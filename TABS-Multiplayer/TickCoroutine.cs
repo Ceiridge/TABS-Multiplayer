@@ -84,7 +84,7 @@ namespace TABS_Multiplayer
         {
             foreach(UnitBlueprint ub in LandfallUnitDatabase.GetDatabase().Units)
             {
-                if (ub.Entity.Name == EntName)
+                if (ub.Entity.ID == EntName)
                     return ub;
             }
             return LandfallUnitDatabase.GetDatabase().Units[0];  // Return the first one if none is found (illegal state)

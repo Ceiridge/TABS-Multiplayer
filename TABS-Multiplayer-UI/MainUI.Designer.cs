@@ -40,11 +40,18 @@
             this.button1 = new System.Windows.Forms.Button();
             this.managePage = new System.Windows.Forms.TabPage();
             this.tcpWaiter = new System.Windows.Forms.Timer(this.components);
+            this.budgetVal = new System.Windows.Forms.NumericUpDown();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.budgetBtn = new System.Windows.Forms.Button();
             this.waitPanel.SuspendLayout();
             this.tabCtr.SuspendLayout();
             this.connectPage.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.managePage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.budgetVal)).BeginInit();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // waitPanel
@@ -146,6 +153,7 @@
             // managePage
             // 
             this.managePage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(19)))), ((int)(((byte)(19)))), ((int)(((byte)(19)))));
+            this.managePage.Controls.Add(this.groupBox4);
             this.managePage.Location = new System.Drawing.Point(4, 30);
             this.managePage.Name = "managePage";
             this.managePage.Padding = new System.Windows.Forms.Padding(3);
@@ -157,6 +165,51 @@
             // 
             this.tcpWaiter.Enabled = true;
             this.tcpWaiter.Tick += new System.EventHandler(this.tcpWaiter_Tick);
+            // 
+            // budgetVal
+            // 
+            this.budgetVal.Location = new System.Drawing.Point(6, 28);
+            this.budgetVal.Maximum = new decimal(new int[] {
+            15000,
+            0,
+            0,
+            0});
+            this.budgetVal.Name = "budgetVal";
+            this.budgetVal.Size = new System.Drawing.Size(349, 29);
+            this.budgetVal.TabIndex = 0;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.budgetBtn);
+            this.groupBox4.Controls.Add(this.label2);
+            this.groupBox4.Controls.Add(this.budgetVal);
+            this.groupBox4.ForeColor = System.Drawing.Color.White;
+            this.groupBox4.Location = new System.Drawing.Point(6, 6);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(678, 93);
+            this.groupBox4.TabIndex = 2;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Unit Budget";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(2, 66);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(90, 21);
+            this.label2.TabIndex = 1;
+            this.label2.Text = " 0 = Infinite";
+            // 
+            // budgetBtn
+            // 
+            this.budgetBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.budgetBtn.Location = new System.Drawing.Point(361, 19);
+            this.budgetBtn.Name = "budgetBtn";
+            this.budgetBtn.Size = new System.Drawing.Size(311, 68);
+            this.budgetBtn.TabIndex = 2;
+            this.budgetBtn.Text = "Set";
+            this.budgetBtn.UseVisualStyleBackColor = true;
+            this.budgetBtn.Click += new System.EventHandler(this.budgetBtn_Click);
             // 
             // MainUI
             // 
@@ -183,6 +236,10 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
+            this.managePage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.budgetVal)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -200,6 +257,10 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Timer tcpWaiter;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Button budgetBtn;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.NumericUpDown budgetVal;
     }
 }
 

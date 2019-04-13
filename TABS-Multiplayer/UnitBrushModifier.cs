@@ -29,7 +29,7 @@ namespace Landfall.TABS.UnitPlacement
             if (costsBudget) // Don't send the unit when it's placed by the resetter
             {
                 SocketConnection.SetCulture();
-                SocketConnection.WriteToOpponent("SPAWNUNIT|" + blueprint.Entity.Name + "|" + team.ToString() +
+                SocketConnection.WriteToOpponent("SPAWNUNIT|" + blueprint.Entity.ID + "|" + team.ToString() +
                     "|" + position.ToString("F5"));
                 // Send a spawn command
             }
