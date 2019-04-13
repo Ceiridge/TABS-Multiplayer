@@ -21,6 +21,15 @@ namespace Landfall.TABS.UnitPlacement
                 m_brushBehaviour.SetBrushCursor(m_cursor, m_cursorVisuals);
             }
         }
+
+        public extern void orig_PlaceUnit(UnitBlueprint blueprint, Team team, Vector3 position, bool costsBudget);
+        public new void PlaceUnit(UnitBlueprint blueprint, Team team, Vector3 position, bool costsBudget = true)
+        {
+            orig_PlaceUnit(blueprint, team, position, costsBudget);
+            SocketConnection.WriteToOpponent("SPAWNUNIT|" + blueprint.Entity.Name + "|" + team.ToString() +
+                "|" + position.ToString("F5"));
+            // Send a spawn command
+        }
     }
 
     class BrushBehaviorMultiplayer : BrushBehaviourSandbox
