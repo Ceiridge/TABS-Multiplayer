@@ -1,14 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
+using System.Threading;
 
 namespace TABS_Multiplayer_UI
 {
     class ScreenshotHandler
     {
         public static IntPtr unityWindow = IntPtr.Zero;
+        public static bool streaming = true; // Debug
+
+        private const int FPS = 24;
+        private List<Image> imageBlocks = new List<Image>();
 
         public static Image GetImageFromWindow()
         {
@@ -45,6 +51,45 @@ namespace TABS_Multiplayer_UI
 
             cropImage.Dispose(); // Prevent a memleak
             return cropped;
+        }
+
+        public static void FramingThread()
+        {
+            while(true) // Make screenshots forever >:)
+            {
+                if(streaming & unityWindow != IntPtr.Zero)
+                {
+                    Image gameScreen = GetImageFromWindow();
+                    gameScreen = JpegCompression(gameScreen, 50);
+                    //gameScreen.Save("screenshot.jpg"); // Debug
+                }
+                Thread.Sleep(1000 / FPS);
+            }
+        }
+
+        private static Image JpegCompression(Image img, int quality)
+        {
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
+            ImageCodecInfo ici = null;
+
+            foreach (ImageCodecInfo codec in codecs)
+            {
+                if (codec.MimeType == "image/jpeg")
+                {
+                    ici = codec;
+                    break;
+                }
+            }
+
+            EncoderParameters ep = new EncoderParameters();
+            ep.Param[0] = new EncoderParameter(Encoder.Quality, (long)quality);
+            MemoryStream memStream = new MemoryStream();
+            img.Save(memStream, ici, ep);
+            img.Dispose();
+
+            Image newImg = Image.FromStream(memStream);
+            //memStream.Dispose();
+            return newImg;
         }
     }
 

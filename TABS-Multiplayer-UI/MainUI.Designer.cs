@@ -39,19 +39,19 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
             this.managePage = new System.Windows.Forms.TabPage();
-            this.tcpWaiter = new System.Windows.Forms.Timer(this.components);
-            this.budgetVal = new System.Windows.Forms.NumericUpDown();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.budgetBtn = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.budgetVal = new System.Windows.Forms.NumericUpDown();
+            this.tcpWaiter = new System.Windows.Forms.Timer(this.components);
             this.waitPanel.SuspendLayout();
             this.tabCtr.SuspendLayout();
             this.connectPage.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.managePage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.budgetVal)).BeginInit();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.budgetVal)).BeginInit();
             this.SuspendLayout();
             // 
             // waitPanel
@@ -161,23 +161,6 @@
             this.managePage.TabIndex = 1;
             this.managePage.Text = "Manage";
             // 
-            // tcpWaiter
-            // 
-            this.tcpWaiter.Enabled = true;
-            this.tcpWaiter.Tick += new System.EventHandler(this.tcpWaiter_Tick);
-            // 
-            // budgetVal
-            // 
-            this.budgetVal.Location = new System.Drawing.Point(6, 28);
-            this.budgetVal.Maximum = new decimal(new int[] {
-            15000,
-            0,
-            0,
-            0});
-            this.budgetVal.Name = "budgetVal";
-            this.budgetVal.Size = new System.Drawing.Size(349, 29);
-            this.budgetVal.TabIndex = 0;
-            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.budgetBtn);
@@ -191,15 +174,6 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Unit Budget";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(2, 66);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(90, 21);
-            this.label2.TabIndex = 1;
-            this.label2.Text = " 0 = Infinite";
-            // 
             // budgetBtn
             // 
             this.budgetBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -210,6 +184,32 @@
             this.budgetBtn.Text = "Set";
             this.budgetBtn.UseVisualStyleBackColor = true;
             this.budgetBtn.Click += new System.EventHandler(this.budgetBtn_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(2, 66);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(90, 21);
+            this.label2.TabIndex = 1;
+            this.label2.Text = " 0 = Infinite";
+            // 
+            // budgetVal
+            // 
+            this.budgetVal.Location = new System.Drawing.Point(6, 28);
+            this.budgetVal.Maximum = new decimal(new int[] {
+            15000,
+            0,
+            0,
+            0});
+            this.budgetVal.Name = "budgetVal";
+            this.budgetVal.Size = new System.Drawing.Size(349, 29);
+            this.budgetVal.TabIndex = 0;
+            // 
+            // tcpWaiter
+            // 
+            this.tcpWaiter.Enabled = true;
+            this.tcpWaiter.Tick += new System.EventHandler(this.tcpWaiter_Tick);
             // 
             // MainUI
             // 
@@ -237,9 +237,9 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.managePage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.budgetVal)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.budgetVal)).EndInit();
             this.ResumeLayout(false);
 
         }

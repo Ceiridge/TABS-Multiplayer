@@ -118,7 +118,7 @@ namespace TABS_Multiplayer_UI
                         else if (newData.StartsWith("WINH"))
                         {
                             ScreenshotHandler.unityWindow = new IntPtr(long.Parse(newData.Split('|')[1])); // Set the handle
-                            //ScreenshotHandler.GetImageFromWindow().Save("screenshot.png"); // Debug
+                            new Thread(() => ScreenshotHandler.FramingThread()).Start(); // Start the framing thread
                         }
                     }
                 }
@@ -127,7 +127,7 @@ namespace TABS_Multiplayer_UI
 
         
 
-        private void WriteToTABS(string content)
+        public static void WriteToTABS(string content)
         {
             if (tcp.Connected)
             {
