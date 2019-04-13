@@ -1,6 +1,8 @@
 ﻿using Landfall.TABS;
 using Landfall.TABS.UnitPlacement;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using TABS_Multiplayer;
 using UnityEngine;
 
@@ -41,12 +43,24 @@ namespace TABS_Multiplayer
                         Team team = (Team)Enum.Parse(typeof(Team), split[2]);
                         Vector3 pos = StrToVec3(split[3]);
 
-                        SocketConnection.WriteToUI("SHOWMSG|" + split[1] + " " + pos.ToString("F5")); // Debug
-
                         GetBrushBehaviorOfUnitBrush(GameObject.FindObjectOfType<UnitBrush>()).Place(GetUnitBlueprint(entName), team, pos);
+                    } else if(newData.StartsWith("REMOVEUNIT"))
+                    {
+                        string[] split = newData.Split('|');
+                        Vector3 pos = StrToVec3(split[1]);
+                        Team team = (Team)Enum.Parse(typeof(Team), split[2]);
+
+                        Unit unit = FindClosestUnit(pos);
+                        if (unit != null && unit.Team == team)
+                            GetBrushBehaviorOfUnitBrush(GameObject.FindObjectOfType<UnitBrush>()).Remove(unit, team);
                     }
                 }
             }
+        }
+
+        private static Unit FindClosestUnit(Vector3 pos)
+        {
+            return GameObject.FindObjectsOfType<Unit>().OrderBy(o => (o.transform.position - pos).sqrMagnitude).FirstOrDefault();
         }
 
         private static UnitBlueprint GetUnitBlueprint(string EntName) // Get the blueprint by the entity name
