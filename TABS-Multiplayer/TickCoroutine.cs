@@ -174,3 +174,10 @@ class patch_PlayerInput : PlayerInput
         orig_Update();
     }
 }
+class patch_MainMenuStateHandler : MainMenuStateHandler
+{
+    public void Update()
+    {
+        TickCoroutine.Tick();
+    }
+}
