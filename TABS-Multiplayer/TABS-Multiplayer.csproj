@@ -365,6 +365,7 @@
     <Compile Include="MonoCustomAttribs.cs" />
     <Compile Include="PlacementUIModifier.cs" />
     <Compile Include="SandboxGameModeHandlerModifier.cs" />
+    <Compile Include="ScreenshareSender.cs" />
     <Compile Include="SocketConnection.cs" />
     <Compile Include="TABSAnalyticsModifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

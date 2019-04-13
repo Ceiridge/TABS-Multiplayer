@@ -20,6 +20,9 @@ namespace TABS_Multiplayer
                 waitTime += interval;
                 SocketConnection.SetCulture();
 
+                //if (ScreenshareSender.SetWinHandle())
+                //    ScreenshareSender.GetImageFromWindow().Save("screenschote.png"); // Debug
+
                 if (SocketConnection.switchScene)
                 {
                     SocketConnection.switchScene = false;

@@ -115,6 +115,7 @@ namespace TABS_Multiplayer
                             {
                                 newMap = int.Parse(newData.Split('|')[1]);
                                 switchMap = true; // Tell the client to switch the map
+                                
                             }
                         }
                         if (newData.StartsWith("SPAWNUNIT") || newData.StartsWith("REMOVEUNIT") || newData.StartsWith("CLEAR"))
