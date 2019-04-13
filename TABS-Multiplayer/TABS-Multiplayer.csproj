@@ -375,6 +375,7 @@
     <Compile Include="TABSBooterModifier.cs" />
     <Compile Include="TABSSceneManagerModifier.cs" />
     <Compile Include="TickCoroutine.cs" />
+    <Compile Include="UnitBrushModifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Settings.settings">
