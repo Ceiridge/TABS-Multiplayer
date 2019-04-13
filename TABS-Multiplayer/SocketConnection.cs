@@ -104,22 +104,20 @@ namespace TABS_Multiplayer
                         string newData = reader.ReadString();
                         SetCulture();
 
-                        if (isServer)
+                        if (!isServer)
                         {
-
-                        } else
-                        {
-                            if(newData.StartsWith("LOADSCENE") && false) // Disable loadscene for now
+                            if (newData.StartsWith("LOADSCENE") && false) // Disable loadscene for now
                             {
                                 newScene = newData.Split('|')[1];
                                 switchScene = true; // Tell the client to switch the scene
-                            } else if (newData.StartsWith("LOADMAP"))
+                            }
+                            else if (newData.StartsWith("LOADMAP"))
                             {
                                 newMap = int.Parse(newData.Split('|')[1]);
                                 switchMap = true; // Tell the client to switch the map
                             }
                         }
-                        if (newData.StartsWith("SPAWNUNIT") || newData.StartsWith("REMOVEUNIT"))
+                        if (newData.StartsWith("SPAWNUNIT") || newData.StartsWith("REMOVEUNIT") || newData.StartsWith("CLEAR"))
                             tickCommands.Enqueue(newData);
                         // Add the command to be processed by the tick coroutine
                     }

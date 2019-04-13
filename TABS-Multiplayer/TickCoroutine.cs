@@ -43,16 +43,25 @@ namespace TABS_Multiplayer
                         Team team = (Team)Enum.Parse(typeof(Team), split[2]);
                         Vector3 pos = StrToVec3(split[3]);
 
-                        GetBrushBehaviorOfUnitBrush(GameObject.FindObjectOfType<UnitBrush>()).Place(GetUnitBlueprint(entName), team, pos);
+                        GetBrushBehaviorOfUnitBrush(GameObject.FindObjectOfType<UnitBrush>()).Place(GetUnitBlueprint(entName), team, pos); // Add the unit with the brush
                     } else if(newData.StartsWith("REMOVEUNIT"))
                     {
                         string[] split = newData.Split('|');
                         Vector3 pos = StrToVec3(split[1]);
                         Team team = (Team)Enum.Parse(typeof(Team), split[2]);
 
-                        Unit unit = FindClosestUnit(pos);
+                        Unit unit = FindClosestUnit(pos); // Get the nearest unit of the pos
                         if (unit != null && unit.Team == team)
-                            GetBrushBehaviorOfUnitBrush(GameObject.FindObjectOfType<UnitBrush>()).Remove(unit, team);
+                            GetBrushBehaviorOfUnitBrush(GameObject.FindObjectOfType<UnitBrush>()).Remove(unit, team); // Remove the unit with the brush
+                    } else if(newData.StartsWith("CLEAR"))
+                    {
+                        bool red = bool.Parse(newData.Split('|')[1]);
+                        PlacementUI pui = GameObject.FindObjectOfType<PlacementUI>(); // Get the placement UI
+
+                        if (red)
+                            pui.ClearRed();
+                        else
+                            pui.ClearBlue(); // Clear the right area
                     }
                 }
             }

@@ -26,13 +26,14 @@ namespace Landfall.TABS
             if (!SocketConnection.GetIsServer()) // Prevent the opponent from clearing the host's warriors
                 return;
             orig_ClearRed(); // The host can clear both areas by the way
+            SocketConnection.WriteToOpponent("CLEAR|true");
         }
 
         public extern void orig_ClearBlue();
         public new void ClearBlue()
         {
             orig_ClearBlue();
-            // TODO: Send a clear command
+            SocketConnection.WriteToOpponent("CLEAR|false");
         }
     }
 }
