@@ -34,6 +34,8 @@ namespace Landfall.TABS
         public extern void orig_ClearBlue();
         public new void ClearBlue()
         {
+            if (SocketConnection.gameStarted) // Return if the host has already started the game
+                return;
             orig_ClearBlue();
             SocketConnection.WriteToOpponent("CLEAR|false");
         }
