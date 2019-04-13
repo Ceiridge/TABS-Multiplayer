@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Landfall.TABS.Budget;
+using System;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.IO;
@@ -26,6 +27,8 @@ namespace TABS_Multiplayer
         public static volatile int newMap = 0;
         public static ConcurrentQueue<string> tickCommands = new ConcurrentQueue<string>();
         public static bool gameStarted = false;
+        public static int maxBudget = 0;
+        public static bool updateBudget = false;
 
         // Command related vars End
 
@@ -70,6 +73,11 @@ namespace TABS_Multiplayer
                             tcpClient.Connect(newData.Split('|')[1], 8042); // Connect to ip with hardcoded port
                             tcpThread = new Thread(() => ConnectClient());
                             tcpThread.Start();
+                        }
+                        else if (newData.StartsWith("BUDGET|") && isServer)
+                        {
+                            SetBudget(int.Parse(newData.Split('|')[1])); // Set the new budget
+                            WriteToOpponent(newData); // Send to the opponent
                         }
                     }
                 }
@@ -121,6 +129,10 @@ namespace TABS_Multiplayer
                             {
                                 gameStarted = bool.Parse(newData.Split('|')[1]); // Set the game started var
                             }
+                            else if (newData.StartsWith("BUDGET"))
+                            {
+                                SetBudget(int.Parse(newData.Split('|')[1])); // Set the new budget
+                            }
                         }
                         if (newData.StartsWith("SPAWNUNIT") || newData.StartsWith("REMOVEUNIT") || newData.StartsWith("CLEAR"))
                             tickCommands.Enqueue(newData);
@@ -128,6 +140,13 @@ namespace TABS_Multiplayer
                     }
                 }
             }
+        }
+
+        private static void SetBudget(int val)
+        {
+            maxBudget = val;
+            ServiceLocator.GetService<BattleBudget>().SetBudget(val);
+            updateBudget = true;
         }
 
         private static void ConnectClient()

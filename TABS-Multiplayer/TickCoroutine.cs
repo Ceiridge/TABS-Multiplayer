@@ -1,8 +1,10 @@
 ﻿using Landfall.TABS;
+using Landfall.TABS.Budget;
 using Landfall.TABS.UnitPlacement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using TABS_Multiplayer;
 using UnityEngine;
 
@@ -37,6 +39,13 @@ namespace TABS_Multiplayer
                     TABSSceneManager.LoadMap(GetMap(SocketConnection.newMap)); // Load the new map
                 }
 
+                if(SocketConnection.updateBudget) // Refresh the UI's budget
+                {
+                    SocketConnection.updateBudget = false;
+                    UpdateUIBudget();
+                }
+
+
                 while (SocketConnection.tickCommands.TryDequeue(out string newData))
                 {
                     if(newData.StartsWith("SPAWNUNIT"))
@@ -46,7 +55,11 @@ namespace TABS_Multiplayer
                         Team team = (Team)Enum.Parse(typeof(Team), split[2]);
                         Vector3 pos = StrToVec3(split[3]);
 
-                        GetBrushBehaviorOfUnitBrush(GameObject.FindObjectOfType<UnitBrush>()).Place(GetUnitBlueprint(entName), team, pos); // Add the unit with the brush
+                        UnitBlueprint blueprint = GetUnitBlueprint(entName);
+                        GetBrushBehaviorOfUnitBrush(GameObject.FindObjectOfType<UnitBrush>()).Place(blueprint, team, pos); // Add the unit with the brush
+
+                        ServiceLocator.GetService<BattleBudget>().SpendAmount(team, (int)blueprint.UnitCost); // Update the budget
+                        UpdateUIBudget();
                     } else if(newData.StartsWith("REMOVEUNIT"))
                     {
                         string[] split = newData.Split('|');
@@ -55,7 +68,12 @@ namespace TABS_Multiplayer
 
                         Unit unit = FindClosestUnit(pos); // Get the nearest unit of the pos
                         if (unit != null && unit.Team == team)
+                        {
                             GetBrushBehaviorOfUnitBrush(GameObject.FindObjectOfType<UnitBrush>()).Remove(unit, team); // Remove the unit with the brush
+
+                            ServiceLocator.GetService<BattleBudget>().ReturnAmount(team, (int)unit.unitBlueprint.UnitCost); // Update the budget
+                            UpdateUIBudget();
+                        }
                     } else if(newData.StartsWith("CLEAR"))
                     {
                         bool red = bool.Parse(newData.Split('|')[1]);
@@ -68,6 +86,12 @@ namespace TABS_Multiplayer
                     }
                 }
             }
+        }
+
+        private static void UpdateUIBudget()
+        {
+            typeof(UnitBrush).GetMethod("UpdateTeamBudgetsInUI", BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(GameObject.FindObjectOfType<UnitBrush>(), null);
         }
 
         private static PlacementUI.ClearButtonDelegate GetClearButtonDelegate(PlacementUI pui)
