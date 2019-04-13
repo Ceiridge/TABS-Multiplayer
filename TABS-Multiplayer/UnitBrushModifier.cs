@@ -30,6 +30,14 @@ namespace Landfall.TABS.UnitPlacement
                 "|" + position.ToString("F5"));
             // Send a spawn command
         }
+
+        public extern void orig_RemoveUnit(Unit unit, Team team);
+        public new void RemoveUnit(Unit unit, Team team)
+        {
+            orig_RemoveUnit(unit, team);
+            SocketConnection.WriteToOpponent("REMOVEUNIT|" + unit.transform.position.ToString("F5") + "|" + team.ToString());
+            // Send a remove command with its position (it acts like an inaccurate GUID)
+        }
     }
 
     class BrushBehaviorMultiplayer : BrushBehaviourSandbox
