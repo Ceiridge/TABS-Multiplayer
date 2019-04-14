@@ -65,12 +65,14 @@ namespace TABS_Multiplayer_UI
             MainUI.SetCulture();
             while(true) // Make screenshots forever >:)
             {
-                if(streaming & unityWindow != IntPtr.Zero && MainUI.isHost && MainUI.screenPartner != null)
+                long millis = DateTimeOffset.Now.Ticks / TimeSpan.TicksPerMillisecond;
+                if (streaming & unityWindow != IntPtr.Zero && MainUI.isHost && MainUI.screenPartner != null)
                 {
                     Image gameScreen = GetImageFromWindow();
                     UpdateChanges(gameScreen);
                 }
-                Thread.Sleep(1000 / FPS);
+                long dMillis = (DateTimeOffset.Now.Ticks / TimeSpan.TicksPerMillisecond) - millis;
+                Thread.Sleep(Math.Max(1, (1000 / (FPS * 2)) - (int)dMillis));
             }
         }
 

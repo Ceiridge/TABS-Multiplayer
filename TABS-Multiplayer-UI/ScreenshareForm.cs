@@ -23,7 +23,7 @@ namespace TABS_Multiplayer_UI
 
         private void ScreenshareForm_Load(object sender, EventArgs e)
         {
-            imageUpdater.Interval = 1000 / ScreenshotHandler.FPS;
+            imageUpdater.Interval = 1000 / (ScreenshotHandler.FPS * 3);
         }
 
         private void ScreenshareForm_Shown(object sender, EventArgs e)
