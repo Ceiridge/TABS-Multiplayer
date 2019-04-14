@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -42,7 +43,71 @@ namespace TABS_Multiplayer_UI
                 pictureBox1.Image = new Bitmap(ScreenshotHandler.winSize.Width, ScreenshotHandler.winSize.Height);
             }
 
+            byte[] data;
+            while (ScreenshotHandler.datas.TryTake(out data))
+            {
+                string strData = MainUI.ByteToStr(data);
+                if (strData.StartsWith("IMG")) // If it's an image
+                {
+                    strData = strData.Split(new string[] { "|$|" }, StringSplitOptions.None)[0]; // Only get our header
+
+                    if (ScreenshotHandler.winSize.Width == 0)
+                    {
+                        string[] sizeData = strData.Split('|')[2].Split(',');
+                        ScreenshotHandler.winSize = new Size(int.Parse(sizeData[0]), int.Parse(sizeData[1]));
+                    }
+                    /*if(totalImage == null) 
+                    {
+                        string[] sizeData = strData.Split('|')[2].Split(',');
+                        totalImage = new Bitmap(int.Parse(sizeData[0]), int.Parse(sizeData[1])); // Make a total image if it's missing
+                    }*/
+
+                    string[] pointData = strData.Replace("{X=", "").Replace("}", "").Replace("Y=", "").Split('|')[1].Split(',');
+
+                    byte[] imgData = ScreenshotHandler.Decompress(ScreenshotHandler.GetImageData(data)); // Get the image bytes
+                    Point loc = new Point(int.Parse(pointData[0]), int.Parse(pointData[1])); // Get the box location
+
+                    MemoryStream imgMem = new MemoryStream(imgData);
+                    Image boxImg = Image.FromStream(imgMem); // Get image from bytes
+
+                    Bitmap boxBit = new Bitmap(boxImg);
+                    if (!ScreenshotHandler.imageBlocks.ContainsKey(loc))
+                        ScreenshotHandler.imageBlocks.Add(loc, boxBit);
+                    else
+                        ScreenshotHandler.imageBlocks[loc] = boxBit;
+                    /*MainUI.screenshareForm.Invoke(() => {
+                        /*int dW = (loc.X + boxImg.Width + 1) - totalImage.Width;
+                        int dH = (loc.Y + boxImg.Height + 1) - totalImage.Height;
+
+                        if (dW > 0) // Crop width if it's too big
+                        {
+                            Bitmap toCrop = new Bitmap(boxImg);
+                            boxImg = toCrop.Clone(new Rectangle(0, 0, toCrop.Width - dW, toCrop.Height), toCrop.PixelFormat);
+                            toCrop.Dispose();
+                        }
+                        if (dH > 0) // Crop height if it's too big
+                        {
+                            Bitmap toCrop = new Bitmap(boxImg);
+                            boxImg = toCrop.Clone(new Rectangle(0, 0, toCrop.Width, toCrop.Height - dH), toCrop.PixelFormat);
+                            toCrop.Dispose();
+                        } // Old client-side cropping (useless)
+
+                        using (Graphics g = Graphics.FromImage(totalImage)) // Draw the image on the totalImage
+                        {
+                            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+                            g.DrawImage(boxImg, loc);
+                        }
+                        boxImg.Dispose();
+                    });*/
+
+                    //imgMem.Dispose(); // Clear memory
+                }
+            }
+
+
             pictureBox1.Invalidate();
+            pictureBox1.Refresh();
+            pictureBox1.Update();
         }
 
         public void ArrangeWindow()
@@ -67,10 +132,10 @@ namespace TABS_Multiplayer_UI
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
                 foreach (Point loc in ScreenshotHandler.imageBlocks.Keys)
                 {
-                    Bitmap img;
-                    if(ScreenshotHandler.imageBlocks.TryGetValue(loc, out img))
-                        g.DrawImage(img, loc);
+                    Bitmap img = ScreenshotHandler.imageBlocks[loc];
+                    g.DrawImage(img, loc);
                 }
+                this.Text = "Imgboxes: " + ScreenshotHandler.imageBlocks.Count;
             }
         }
     }
