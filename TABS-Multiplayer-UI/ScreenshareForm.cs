@@ -91,8 +91,8 @@ namespace TABS_Multiplayer_UI
 
 
                    
-                    pictureBox1.Invalidate(new Rectangle((int)((float)loc.X * screenPercentageX), 
-                        (int)((float)loc.Y * screenPercentageY), (int)((float)boxBit.Width * screenPercentageX),
+                    pictureBox1.Invalidate(new Rectangle((int)((float)loc.X * screenPercentageX - 1), 
+                        (int)((float)loc.Y * screenPercentageY), (int)((float)boxBit.Width * screenPercentageX + 1),
                         (int)((float)boxBit.Height * screenPercentageY))); // Refresh the picturebox
                     //pictureBox1.Update();
 

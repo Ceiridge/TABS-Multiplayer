@@ -363,6 +363,7 @@
   <ItemGroup>
     <Compile Include="GameStateManagerModifier.cs" />
     <Compile Include="GlobalSettingsHandlerModifier.cs" />
+    <Compile Include="MainMenuTimeHandlerModifier.cs" />
     <Compile Include="MonoCustomAttribs.cs" />
     <Compile Include="PlacementUIModifier.cs" />
     <Compile Include="SandboxGameModeHandlerModifier.cs" />

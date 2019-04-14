@@ -29,6 +29,7 @@ namespace TABS_Multiplayer
         public static bool gameStarted = false;
         public static int maxBudget = 0;
         public static bool updateBudget = false;
+        public static bool ingame = false;
 
         // Command related vars End
 

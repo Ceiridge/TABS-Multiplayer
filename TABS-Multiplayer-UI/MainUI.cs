@@ -148,6 +148,7 @@ namespace TABS_Multiplayer_UI
                                     screenshareForm.ArrangeWindow();
                                     screenshareForm.Visible = true;
                                     WinAPIs.SetForegroundWindow(screenshareForm.Handle);
+                                    ScreenshotHandler.WriteToUdp(StrToByte("HELLO"));
                                     // Arrange and make the screenshare window ready for receiving
                                 } else
                                 {
