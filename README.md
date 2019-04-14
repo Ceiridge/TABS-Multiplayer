@@ -5,6 +5,7 @@ A multiplayer mod for the *Totally Accurate Battle Simulator (Totally Accurate B
 
 Special thanks to [MonoMod](https://github.com/0x0ade/MonoMod)
 
+[![Video Tutorial](https://images.streamable.com/east/image/nvxd5_1.jpg)](https://streamable.com/nvxd5)
 # How To Install
 **WARNING! UNINSTALL BEFORE UPDATING!!!**
 1. Close TABS
