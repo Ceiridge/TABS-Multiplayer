@@ -128,6 +128,7 @@ namespace TABS_Multiplayer
                             } else if(newData.StartsWith("GSTARTED"))
                             {
                                 gameStarted = bool.Parse(newData.Split('|')[1]); // Set the game started var
+                                WriteToUI(newData); // Echo to the UI for screensharing
                             }
                             else if (newData.StartsWith("BUDGET"))
                             {

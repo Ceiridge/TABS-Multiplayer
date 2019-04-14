@@ -1,20 +1,26 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.IO.Compression;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace TABS_Multiplayer_UI
 {
     class ScreenshotHandler
     {
         public static IntPtr unityWindow = IntPtr.Zero;
-        public static bool streaming = true; // Debug
+        public static bool streaming = false;
+        public const int FPS = 24;
 
-        private const int FPS = 24;
-        private List<Image> imageBlocks = new List<Image>();
+        public static ConcurrentDictionary<Point, Bitmap> imageBlocks = new ConcurrentDictionary<Point, Bitmap>();
+        private static Dictionary<Point, Bitmap> hostimageBlocks = new Dictionary<Point, Bitmap>();
+        public static Size winSize;
 
         public static Image GetImageFromWindow()
         {
@@ -55,19 +61,243 @@ namespace TABS_Multiplayer_UI
 
         public static void FramingThread()
         {
+            MainUI.SetCulture();
             while(true) // Make screenshots forever >:)
             {
-                if(streaming & unityWindow != IntPtr.Zero)
+                if(streaming & unityWindow != IntPtr.Zero && MainUI.isHost && MainUI.screenPartner != null)
                 {
                     Image gameScreen = GetImageFromWindow();
-                    gameScreen = JpegCompression(gameScreen, 50);
-                    //gameScreen.Save("screenshot.jpg"); // Debug
+                    UpdateChanges(gameScreen);
                 }
                 Thread.Sleep(1000 / FPS);
             }
         }
 
-        private static Image JpegCompression(Image img, int quality)
+        private static void UpdateChanges(Image gameScreen)
+        {
+            int width = gameScreen.Width;
+            int height = gameScreen.Height; // Get the bound
+            Bitmap gameScreenBitMap = new Bitmap(gameScreen);
+
+            for (int x = 0; x <= (width / 50); x++)
+            {
+                for(int y = 0; y <= (height / 50); y++) // 50x50 block image
+                {
+                    Point loc = new Point(x * 50, y * 50);
+
+                    int dW = (loc.X + 50) - gameScreenBitMap.Width; // Prevent cropping out of bounds
+                    int dH = (loc.Y + 50) - gameScreenBitMap.Height;
+                    int toRemW = dW > 0 ? dW : 0;
+                    int toRemH = dH > 0 ? dH : 0;
+
+                    Bitmap part = gameScreenBitMap.Clone(new Rectangle(loc.X, loc.Y, 50 - toRemW, 50 - toRemH), gameScreenBitMap.PixelFormat);
+                    bool hasChanged = false;
+
+                    if(!hostimageBlocks.ContainsKey(loc))
+                    {
+                        hostimageBlocks.Add(loc, part); // Add the image if it's not there yet
+                        hasChanged = true;
+                    } else
+                    {
+                        int diffPixs = GetDifferentPixels(hostimageBlocks[loc], part);
+                        if(diffPixs > 3) // If 3 pixels have changed of the block
+                        {
+                            hostimageBlocks[loc] = part;
+                            hasChanged = true;
+                        }
+                    }
+
+                    if (hasChanged)
+                    {
+                        MemoryStream buffer = new MemoryStream();
+                        StreamWriter bufferWriter = new StreamWriter(buffer);
+                        bufferWriter.Write("IMG|" + loc.ToString() +
+                            "|" + width + "," + height + "|$|"); // Init the image first and send screen bounds
+
+                        MemoryStream imgBuffer = new MemoryStream();
+                        object[] parameters = JpegCompression(part, 50); // 50% Jpeg Quality
+                        part.Save(imgBuffer, (ImageCodecInfo) parameters[0], (EncoderParameters) parameters[1]); // Write to the image buffer with jpeg compression
+
+                        byte[] imgData = Compress(imgBuffer.ToArray());
+                        bufferWriter.Flush();
+                        buffer.Write(imgData, 0, imgData.Length); // Write image bytes to buffer
+                        bufferWriter.Close();
+
+                        WriteToUdp(buffer.ToArray());
+                        buffer.Dispose();
+                        imgBuffer.Dispose();
+                    }
+                }
+            }
+        }
+
+        public static void UdpThread()
+        {
+            MainUI.SetCulture();
+            while (true)
+            {
+                var listenStuff = !MainUI.isHost ? MainUI.screenPartner : new IPEndPoint(IPAddress.Any, 8042);
+                byte[] data = MainUI.screenClient.Receive(ref listenStuff);
+                if(MainUI.screenPartner == null)
+                    MainUI.screenPartner = listenStuff;
+
+                if(data.Length > 4 && !MainUI.isHost)
+                {
+                    string strData = MainUI.ByteToStr(data);
+                    if(strData.StartsWith("IMG")) // If it's an image
+                    {
+                        strData = strData.Split(new string[] { "|$|" }, StringSplitOptions.None)[0]; // Only get our header
+
+                        if(winSize == null)
+                        {
+                            string[] sizeData = strData.Split('|')[2].Split(',');
+                            winSize = new Size(int.Parse(sizeData[0]), int.Parse(sizeData[1]));
+                        }
+                        /*if(totalImage == null) 
+                        {
+                            string[] sizeData = strData.Split('|')[2].Split(',');
+                            totalImage = new Bitmap(int.Parse(sizeData[0]), int.Parse(sizeData[1])); // Make a total image if it's missing
+                        }*/
+
+                        string[] pointData = strData.Replace("{X=", "").Replace("}", "").Replace("Y=", "").Split('|')[1].Split(',');
+
+                        byte[] imgData = Decompress(GetImageData(data)); // Get the image bytes
+                        Point loc = new Point(int.Parse(pointData[0]), int.Parse(pointData[1])); // Get the box location
+
+                        MemoryStream imgMem = new MemoryStream(imgData);
+                        Image boxImg = Image.FromStream(imgMem); // Get image from bytes
+
+                        Bitmap boxBit = new Bitmap(boxImg);
+                        if (!imageBlocks.ContainsKey(loc))
+                            imageBlocks.TryAdd(loc, boxBit);
+                        else
+                            imageBlocks.TryUpdate(loc, boxBit, boxBit);
+                        /*MainUI.screenshareForm.Invoke(() => {
+                            /*int dW = (loc.X + boxImg.Width + 1) - totalImage.Width;
+                            int dH = (loc.Y + boxImg.Height + 1) - totalImage.Height;
+
+                            if (dW > 0) // Crop width if it's too big
+                            {
+                                Bitmap toCrop = new Bitmap(boxImg);
+                                boxImg = toCrop.Clone(new Rectangle(0, 0, toCrop.Width - dW, toCrop.Height), toCrop.PixelFormat);
+                                toCrop.Dispose();
+                            }
+                            if (dH > 0) // Crop height if it's too big
+                            {
+                                Bitmap toCrop = new Bitmap(boxImg);
+                                boxImg = toCrop.Clone(new Rectangle(0, 0, toCrop.Width, toCrop.Height - dH), toCrop.PixelFormat);
+                                toCrop.Dispose();
+                            } // Old client-side cropping (useless)
+
+                            using (Graphics g = Graphics.FromImage(totalImage)) // Draw the image on the totalImage
+                            {
+                                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+                                g.DrawImage(boxImg, loc);
+                            }
+                            boxImg.Dispose();
+                        });*/
+
+                        //imgMem.Dispose(); // Clear memory
+                    }
+                }
+            }
+        }
+
+        public static void WriteToUdp(byte[] data)
+        {
+            if (MainUI.screenPartner != null)
+                if(MainUI.isHost)
+                    MainUI.screenClient.Send(data, data.Length, MainUI.screenPartner); // Send the data to the partner
+                else
+                    MainUI.screenClient.Send(data, data.Length); // Send the data to the partner
+        }
+
+        private static byte[] GetImageData(byte[] data) // Split the byte array at |$|
+        {
+            int biglines = 0, dollars = 0;
+
+            byte bigLine = MainUI.StrToByte("|")[0];
+            byte dollar = MainUI.StrToByte("$")[0];
+            bool allowWriting = false;
+
+            MemoryStream memStream = new MemoryStream();
+
+            for(int i = 0; i < data.Length; i++)
+            {
+                if (allowWriting)
+                {
+                    memStream.WriteByte(data[i]);
+                    continue;
+                }
+
+                if (data[i] == bigLine)
+                {
+                    biglines++;
+                    if(dollars == 1 && biglines > 1)
+                    {
+                        allowWriting = true;
+                    }
+                } else if(data[i] == dollar)
+                {
+                    dollars++;
+                }
+            }
+            return memStream.ToArray();
+        }
+        private static byte[] Compress(byte[] data)
+        {
+            using (var compressedStream = new MemoryStream())
+            {
+                using (var zipStream = new GZipStream(compressedStream, CompressionMode.Compress))
+                {
+                    zipStream.Write(data, 0, data.Length);
+                    zipStream.Close();
+                    return compressedStream.ToArray();
+                }
+            }
+        }
+        private static byte[] Decompress(byte[] data)
+        {
+            using (var compressedStream = new MemoryStream(data))
+            {
+                using (var zipStream = new GZipStream(compressedStream, CompressionMode.Decompress))
+                {
+                    using (var resultStream = new MemoryStream())
+                    {
+                        zipStream.CopyTo(resultStream);
+                        return resultStream.ToArray();
+                    }
+                }
+            }
+        }
+
+        private static int GetDifferentPixels(Bitmap orig, Bitmap img)
+        {
+            if (orig.Width != img.Width || orig.Height != img.Height) // Only compare if the bounds are the same
+                return -1;
+
+            int differentPixels = 0;
+            for(int x = 0; x < orig.Width; x++)
+            {
+                for(int y = 0; y < orig.Height; y++) // Iterate through every pixel
+                {
+                    Color origC = orig.GetPixel(x, y);
+                    Color imgC = img.GetPixel(x, y);
+
+                    int dR = Math.Abs(origC.R - imgC.R);
+                    int dG = Math.Abs(origC.G - imgC.G);
+                    int dB = Math.Abs(origC.B - imgC.B);
+
+                    if ((dR + dG + dB) > 15) // If the pixel has a different color (15 rgb values away)
+                    {
+                        differentPixels++;
+                    }
+                }
+            }
+
+            return differentPixels;
+        }
+        private static object[] JpegCompression(Image img, int quality)
         {
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
             ImageCodecInfo ici = null;
@@ -83,13 +313,7 @@ namespace TABS_Multiplayer_UI
 
             EncoderParameters ep = new EncoderParameters();
             ep.Param[0] = new EncoderParameter(Encoder.Quality, (long)quality);
-            MemoryStream memStream = new MemoryStream();
-            img.Save(memStream, ici, ep);
-            img.Dispose();
-
-            Image newImg = Image.FromStream(memStream);
-            //memStream.Dispose();
-            return newImg;
+            return new object[] { ici, ep };
         }
     }
 
@@ -117,6 +341,9 @@ namespace TABS_Multiplayer_UI
         public static extern IntPtr GetWindowRect(IntPtr hWnd, ref RECT rect);
         [DllImport("user32.dll")]
         public static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
 
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT

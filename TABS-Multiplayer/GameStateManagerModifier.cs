@@ -12,6 +12,7 @@ namespace Landfall.TABS.GameState
             orig_EnterBattleState();
             SocketConnection.gameStarted = true; // Set the local var
             SocketConnection.WriteToOpponent("GSTARTED|true"); // Send the command to the opponent if it's started
+            SocketConnection.WriteToUI("GSTARTED|true"); // Tell the ui to manage streaming
         }
 
         public extern void orig_EnterPlacementState();
@@ -20,6 +21,7 @@ namespace Landfall.TABS.GameState
             orig_EnterPlacementState();
             SocketConnection.gameStarted = false; // Set the local var
             SocketConnection.WriteToOpponent("GSTARTED|false"); // Send the command to the opponent if it's stopped
+            SocketConnection.WriteToUI("GSTARTED|false"); // Tell the ui to manage streaming
         }
     }
 }
