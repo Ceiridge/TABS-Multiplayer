@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
@@ -63,16 +64,32 @@ namespace TABS_Multiplayer_UI
         public static void FramingThread()
         {
             MainUI.SetCulture();
+            int wishedW = 1024, wishedH = 600;
             while(true) // Make screenshots forever >:)
             {
                 long millis = DateTimeOffset.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 if (streaming & unityWindow != IntPtr.Zero && MainUI.isHost && MainUI.screenPartner != null)
                 {
                     Image gameScreen = GetImageFromWindow();
-                    UpdateChanges(gameScreen);
+                    int width = gameScreen.Width;
+                    int height = gameScreen.Height;
+
+                    while (width > wishedW)
+                        width -= (int)((float)width * 0.2f);
+                    while (height > wishedH)
+                        height -= (int)((float)height * 0.2f); // Get the right resolution
+
+                    Bitmap resizedScreen = new Bitmap(width, height);
+                    Graphics g = Graphics.FromImage(resizedScreen);
+                    g.CompositingMode = CompositingMode.SourceCopy;
+                    g.DrawImage(gameScreen, 0, 0, width, height); // Resize the image
+                    g.Dispose();
+                    gameScreen.Dispose();
+
+                    UpdateChanges(resizedScreen);
                 }
                 long dMillis = (DateTimeOffset.Now.Ticks / TimeSpan.TicksPerMillisecond) - millis;
-                Thread.Sleep(Math.Max(1, (1000 / (FPS * 2)) - (int)dMillis));
+                Thread.Sleep(Math.Max(1, (1000 / FPS) - (int)dMillis));
             }
         }
 
@@ -103,7 +120,7 @@ namespace TABS_Multiplayer_UI
                     } else
                     {
                         int diffPixs = GetDifferentPixels(hostimageBlocks[loc], part);
-                        if(diffPixs > 3) // If 3 pixels have changed of the block
+                        if(diffPixs > 3) // If 3 pixels of the block have been changed significantly
                         {
                             hostimageBlocks[loc] = part;
                             hasChanged = true;
@@ -118,7 +135,7 @@ namespace TABS_Multiplayer_UI
                             "|" + width + "," + height + "|$|"); // Init the image first and send screen bounds
 
                         MemoryStream imgBuffer = new MemoryStream();
-                        object[] parameters = JpegCompression(part, 50); // 50% Jpeg Quality
+                        object[] parameters = JpegCompression(part, 20); // 20% Jpeg Quality
                         part.Save(imgBuffer, (ImageCodecInfo) parameters[0], (EncoderParameters) parameters[1]); // Write to the image buffer with jpeg compression
 
                         byte[] imgData = Compress(imgBuffer.ToArray());
@@ -219,7 +236,7 @@ namespace TABS_Multiplayer_UI
             }
         }
 
-        public static int GetDifferentPixels(Bitmap orig, Bitmap img)
+        /*public static int GetDifferentPixels(Bitmap orig, Bitmap img) // Old and slow
         {
             if (orig.Width != img.Width || orig.Height != img.Height) // Only compare if the bounds are the same
                 return -1;
@@ -244,6 +261,50 @@ namespace TABS_Multiplayer_UI
             }
 
             return differentPixels;
+        }*/
+
+        public static int GetDifferentPixels(Bitmap bmp1, Bitmap bmp2)
+        {
+            if (bmp1 == null || bmp2 == null)
+                return -1;
+            if (object.Equals(bmp1, bmp2))
+                return 0;
+            if (!bmp1.Size.Equals(bmp2.Size) || !bmp1.PixelFormat.Equals(bmp2.PixelFormat))
+                return -1;
+
+            int bytes = bmp1.Width * bmp1.Height * (Image.GetPixelFormatSize(bmp1.PixelFormat) / 8);
+
+            int result = 0;
+            byte[] b1bytes = new byte[bytes];
+            byte[] b2bytes = new byte[bytes];
+
+            BitmapData bitmapData1 = bmp1.LockBits(new Rectangle(0, 0, bmp1.Width, bmp1.Height), ImageLockMode.ReadOnly, bmp1.PixelFormat);
+            BitmapData bitmapData2 = bmp2.LockBits(new Rectangle(0, 0, bmp2.Width, bmp2.Height), ImageLockMode.ReadOnly, bmp2.PixelFormat);
+
+            Marshal.Copy(bitmapData1.Scan0, b1bytes, 0, bytes);
+            Marshal.Copy(bitmapData2.Scan0, b2bytes, 0, bytes); // Lock & Copy RGB bits (much faster than GetPixel)
+
+            for (int n = 0; n <= bytes - 1; n++)
+            {
+                Color origC = Color.FromArgb(b1bytes[n]); // Get rgb difference
+                Color imgC = Color.FromArgb(b2bytes[n]);
+
+                int dR = Math.Abs(origC.R - imgC.R);
+                int dG = Math.Abs(origC.G - imgC.G);
+                int dB = Math.Abs(origC.B - imgC.B);
+
+                if ((dR + dG + dB) > 15) // If more than 15 rgb values difference
+                {
+                    result++;
+                    if (result > 15) // Must change!
+                        break;
+                }
+            }
+
+            bmp1.UnlockBits(bitmapData1);
+            bmp2.UnlockBits(bitmapData2);
+
+            return result;
         }
         private static object[] JpegCompression(Image img, int quality)
         {
