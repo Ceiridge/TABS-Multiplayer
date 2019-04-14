@@ -18,7 +18,8 @@ namespace TABS_Multiplayer_UI
         public static bool streaming = false;
         public const int FPS = 24;
 
-        public static ConcurrentDictionary<Point, Bitmap> imageBlocks = new ConcurrentDictionary<Point, Bitmap>();
+        public static ConcurrentBag<byte[]> datas = new ConcurrentBag<byte[]>();
+        public static Dictionary<Point, Bitmap> imageBlocks = new Dictionary<Point, Bitmap>();
         private static Dictionary<Point, Bitmap> hostimageBlocks = new Dictionary<Point, Bitmap>();
         public static Size winSize;
 
@@ -143,62 +144,7 @@ namespace TABS_Multiplayer_UI
 
                 if(data.Length > 4 && !MainUI.isHost)
                 {
-                    string strData = MainUI.ByteToStr(data);
-                    if(strData.StartsWith("IMG")) // If it's an image
-                    {
-                        strData = strData.Split(new string[] { "|$|" }, StringSplitOptions.None)[0]; // Only get our header
-
-                        if(winSize == null)
-                        {
-                            string[] sizeData = strData.Split('|')[2].Split(',');
-                            winSize = new Size(int.Parse(sizeData[0]), int.Parse(sizeData[1]));
-                        }
-                        /*if(totalImage == null) 
-                        {
-                            string[] sizeData = strData.Split('|')[2].Split(',');
-                            totalImage = new Bitmap(int.Parse(sizeData[0]), int.Parse(sizeData[1])); // Make a total image if it's missing
-                        }*/
-
-                        string[] pointData = strData.Replace("{X=", "").Replace("}", "").Replace("Y=", "").Split('|')[1].Split(',');
-
-                        byte[] imgData = Decompress(GetImageData(data)); // Get the image bytes
-                        Point loc = new Point(int.Parse(pointData[0]), int.Parse(pointData[1])); // Get the box location
-
-                        MemoryStream imgMem = new MemoryStream(imgData);
-                        Image boxImg = Image.FromStream(imgMem); // Get image from bytes
-
-                        Bitmap boxBit = new Bitmap(boxImg);
-                        if (!imageBlocks.ContainsKey(loc))
-                            imageBlocks.TryAdd(loc, boxBit);
-                        else
-                            imageBlocks.TryUpdate(loc, boxBit, boxBit);
-                        /*MainUI.screenshareForm.Invoke(() => {
-                            /*int dW = (loc.X + boxImg.Width + 1) - totalImage.Width;
-                            int dH = (loc.Y + boxImg.Height + 1) - totalImage.Height;
-
-                            if (dW > 0) // Crop width if it's too big
-                            {
-                                Bitmap toCrop = new Bitmap(boxImg);
-                                boxImg = toCrop.Clone(new Rectangle(0, 0, toCrop.Width - dW, toCrop.Height), toCrop.PixelFormat);
-                                toCrop.Dispose();
-                            }
-                            if (dH > 0) // Crop height if it's too big
-                            {
-                                Bitmap toCrop = new Bitmap(boxImg);
-                                boxImg = toCrop.Clone(new Rectangle(0, 0, toCrop.Width, toCrop.Height - dH), toCrop.PixelFormat);
-                                toCrop.Dispose();
-                            } // Old client-side cropping (useless)
-
-                            using (Graphics g = Graphics.FromImage(totalImage)) // Draw the image on the totalImage
-                            {
-                                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
-                                g.DrawImage(boxImg, loc);
-                            }
-                            boxImg.Dispose();
-                        });*/
-
-                        //imgMem.Dispose(); // Clear memory
-                    }
+                    datas.Add(data);
                 }
             }
         }
@@ -212,7 +158,7 @@ namespace TABS_Multiplayer_UI
                     MainUI.screenClient.Send(data, data.Length); // Send the data to the partner
         }
 
-        private static byte[] GetImageData(byte[] data) // Split the byte array at |$|
+        public static byte[] GetImageData(byte[] data) // Split the byte array at |$|
         {
             int biglines = 0, dollars = 0;
 
@@ -244,7 +190,7 @@ namespace TABS_Multiplayer_UI
             }
             return memStream.ToArray();
         }
-        private static byte[] Compress(byte[] data)
+        public static byte[] Compress(byte[] data)
         {
             using (var compressedStream = new MemoryStream())
             {
@@ -256,7 +202,7 @@ namespace TABS_Multiplayer_UI
                 }
             }
         }
-        private static byte[] Decompress(byte[] data)
+        public static byte[] Decompress(byte[] data)
         {
             using (var compressedStream = new MemoryStream(data))
             {
@@ -271,7 +217,7 @@ namespace TABS_Multiplayer_UI
             }
         }
 
-        private static int GetDifferentPixels(Bitmap orig, Bitmap img)
+        public static int GetDifferentPixels(Bitmap orig, Bitmap img)
         {
             if (orig.Width != img.Width || orig.Height != img.Height) // Only compare if the bounds are the same
                 return -1;
