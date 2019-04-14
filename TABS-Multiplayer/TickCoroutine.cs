@@ -86,6 +86,19 @@ namespace TABS_Multiplayer
                         UnitLayoutManager.ClearTeam(team);
                         GetClearButtonDelegate(pui)(team);
                     }
+                    else if (newData.StartsWith("AUDIO"))
+                    {
+                        string[] split = newData.Split('|');
+
+                        string soundRef = split[1];
+                        float volMulti = float.Parse(split[2]);
+                        Vector3 relPos = StrToVec3(split[3]);
+                        SoundEffectVariations.MaterialType matType = (SoundEffectVariations.MaterialType)Enum.
+                            Parse(typeof(SoundEffectVariations.MaterialType), split[4]);
+                        Vector3 worldPos = Camera.main.transform.position + relPos; // Get the world pos from the relative one
+
+                        ServiceLocator.GetService<SoundPlayer>().PlaySoundEffect(soundRef, volMulti, worldPos, matType);
+                    }
                 }
             }
         }

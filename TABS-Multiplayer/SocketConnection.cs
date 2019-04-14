@@ -134,8 +134,10 @@ namespace TABS_Multiplayer
                             {
                                 SetBudget(int.Parse(newData.Split('|')[1])); // Set the new budget
                             }
+                            
                         }
-                        if (newData.StartsWith("SPAWNUNIT") || newData.StartsWith("REMOVEUNIT") || newData.StartsWith("CLEAR"))
+                        if (newData.StartsWith("SPAWNUNIT") || newData.StartsWith("REMOVEUNIT") || newData.StartsWith("CLEAR")
+                            || newData.StartsWith("AUDIO"))
                             tickCommands.Enqueue(newData);
                         // Add the command to be processed by the tick coroutine
                     }

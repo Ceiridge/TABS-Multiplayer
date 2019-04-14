@@ -157,8 +157,8 @@ namespace TABS_Multiplayer_UI
                 {
                     if (!updated.Contains(loc)) continue;
                     Bitmap img = ScreenshotHandler.imageBlocks[loc];
-                    g.DrawImage(img, new Rectangle((int)((float)loc.X * screenPercentageX - 1), (int)((float)loc.Y * screenPercentageY),
-                        (int)((float)img.Width * screenPercentageX), (int)((float)img.Height * screenPercentageY)), 
+                    g.DrawImage(img, new Rectangle((int)((float)loc.X * screenPercentageX) - 1, (int)((float)loc.Y * screenPercentageY),
+                        (int)((float)img.Width * screenPercentageX) + 1, (int)((float)img.Height * screenPercentageY)), 
                         0, 0, img.Width, img.Height, GraphicsUnit.Pixel);
                     // Adjust to screen percentage
                 }
