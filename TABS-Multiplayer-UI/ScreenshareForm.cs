@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -36,11 +37,21 @@ namespace TABS_Multiplayer_UI
             e.Cancel = true; // The UI can only be closed by the main window
         }
 
+        private static List<Point> updated = new List<Point>();
+        private static float screenPercentageX = 1f;
+        private static float screenPercentageY = 1f;
+
         private void imageUpdater_Tick(object sender, EventArgs e)
         {
             if(!initImg && ScreenshotHandler.winSize.Width > 0) {
                 initImg = true;
-                pictureBox1.Image = new Bitmap(ScreenshotHandler.winSize.Width, ScreenshotHandler.winSize.Height);
+                pictureBox1.Image = new Bitmap(this.Width, this.Height);
+            }
+
+            if (ScreenshotHandler.winSize.Width > 0)
+            {
+                screenPercentageX = (float)this.Width / (float)ScreenshotHandler.winSize.Width;
+                screenPercentageY = (float)this.Height / (float)ScreenshotHandler.winSize.Height; // Get our screen percentage
             }
 
             byte[] data;
@@ -55,6 +66,7 @@ namespace TABS_Multiplayer_UI
                     {
                         string[] sizeData = strData.Split('|')[2].Split(',');
                         ScreenshotHandler.winSize = new Size(int.Parse(sizeData[0]), int.Parse(sizeData[1]));
+                        
                     }
                     /*if(totalImage == null) 
                     {
@@ -75,6 +87,15 @@ namespace TABS_Multiplayer_UI
                         ScreenshotHandler.imageBlocks.Add(loc, boxBit);
                     else
                         ScreenshotHandler.imageBlocks[loc] = boxBit;
+                    updated.Add(loc);
+
+
+                   
+                    pictureBox1.Invalidate(new Rectangle((int)((float)loc.X * screenPercentageX), 
+                        (int)((float)loc.Y * screenPercentageY), (int)((float)boxBit.Width * screenPercentageX),
+                        (int)((float)boxBit.Height * screenPercentageY))); // Refresh the picturebox
+                    //pictureBox1.Update();
+
                     /*MainUI.screenshareForm.Invoke(() => {
                         /*int dW = (loc.X + boxImg.Width + 1) - totalImage.Width;
                         int dH = (loc.Y + boxImg.Height + 1) - totalImage.Height;
@@ -104,19 +125,17 @@ namespace TABS_Multiplayer_UI
                 }
             }
 
-
-            pictureBox1.Invalidate();
-            pictureBox1.Refresh();
-            pictureBox1.Update();
         }
 
+        private static WinAPIs.RECT unitySize = new WinAPIs.RECT();
         public void ArrangeWindow()
         {
-            WinAPIs.RECT winSize = new WinAPIs.RECT();
-            WinAPIs.GetWindowRect(ScreenshotHandler.unityWindow, ref winSize); // Get the size of the window
+            WinAPIs.RECT wSize = new WinAPIs.RECT();
+            WinAPIs.GetWindowRect(ScreenshotHandler.unityWindow, ref wSize); // Get the size of the window
+            WinAPIs.GetClientRect(ScreenshotHandler.unityWindow, out unitySize);
 
-            this.Location = new Point(winSize.left, winSize.top);
-            this.Size = new Size(winSize.right - winSize.left, winSize.bottom - winSize.top); // Set size and location
+            this.Location = new Point(wSize.left, wSize.top);
+            this.Size = new Size(wSize.right - wSize.left, wSize.bottom - wSize.top); // Set size and location
         }
 
         public void Invoke(Action action)
@@ -129,13 +148,21 @@ namespace TABS_Multiplayer_UI
             Graphics g = e.Graphics;
             if (initImg && this.Visible)
             {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+                g.SmoothingMode = SmoothingMode.HighSpeed;
+                g.CompositingMode = CompositingMode.SourceCopy;
+                g.InterpolationMode = InterpolationMode.NearestNeighbor;
+                g.PixelOffsetMode = PixelOffsetMode.Half;
+
                 foreach (Point loc in ScreenshotHandler.imageBlocks.Keys)
                 {
+                    if (!updated.Contains(loc)) continue;
                     Bitmap img = ScreenshotHandler.imageBlocks[loc];
-                    g.DrawImage(img, loc);
+                    g.DrawImage(img, new Rectangle((int)((float)loc.X * screenPercentageX - 1), (int)((float)loc.Y * screenPercentageY),
+                        (int)((float)img.Width * screenPercentageX), (int)((float)img.Height * screenPercentageY)), 
+                        0, 0, img.Width, img.Height, GraphicsUnit.Pixel);
+                    // Adjust to screen percentage
                 }
-                this.Text = "Imgboxes: " + ScreenshotHandler.imageBlocks.Count;
+                updated.Clear();
             }
         }
     }
