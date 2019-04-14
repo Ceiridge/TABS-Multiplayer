@@ -16,13 +16,13 @@ Special thanks to [MonoMod](https://github.com/0x0ade/MonoMod)
 1. Copy the `Assembly-CSharp.dll` from the folder you created earlier and paste & replace it in the TABS folder you've just navigated to
 1. Copy the `TABS-Multiplayer-UI.exe` from the folder you created earlier into the game's root directory (the folder you opened at the beginning, near the  `TotallyAccurateBattleSimulator.exe`)
 1. Run `TABS-Multiplayer-UI.exe` to make sure, no AV interferes with the program, **then close it again!** (Especially if you have Avast or Avira and you are experiencing problems, you can add it to the exemptions there)
-1. Open your advanced firewall settings and add a new inbound rule that allows every TCP 8042 connection
+1. Open your advanced firewall settings and add a new inbound rule that allows every TCP + UDP 8042 connection
 1. Run the game
 
 # How To Play
 1. Open TABS
 1. Click `OK` on the welcome message and wait through the loading screens
-1. If you want to be the host: Port-forward the port 8042 in your router settings; As the opponent, you need to connect to the WAN ip of the host (https://checkip.amazonaws.com) (needs to be opened in the host's browser)
+1. If you want to be the host: Port-forward the port 8042 (TCP + UDP) in your router settings; As the opponent, you need to connect to the WAN ip of the host (https://checkip.amazonaws.com) (needs to be opened in the host's browser)
 1. As a hoster, press `Host`, as an opponent, press `Connect` in the multiplayer UI
 1. Make sure not to play in fullscreen
 1. Close the `You can now start a sandbox game` dialog (as the host)
