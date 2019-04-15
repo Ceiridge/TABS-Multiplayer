@@ -7,6 +7,8 @@ Special thanks to [MonoMod](https://github.com/0x0ade/MonoMod)
 
 [![Video Tutorial](https://images.streamable.com/east/image/nvxd5_1.jpg?height=200)](https://streamable.com/nvxd5)
 # How To Install
+*Create a new issue or add me on Discord (Ceiridge#3057) for some installation help/general questions (Issues are preferred!).*
+
 **WARNING! UNINSTALL BEFORE UPDATING!!!**
 1. Close TABS
 1. Download the latest release zip and extract it in a new folder somewhere
