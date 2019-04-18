@@ -121,12 +121,12 @@ namespace TABS_Multiplayer
 
         private static UnitBlueprint GetUnitBlueprint(string EntName) // Get the blueprint by the entity name
         {
-            foreach(UnitBlueprint ub in LandfallUnitDatabase.GetDatabase().Units)
+            foreach(UnitBlueprint ub in GetUnits())
             {
                 if (ub.Entity.ID == EntName)
                     return ub;
             }
-            return LandfallUnitDatabase.GetDatabase().Units[0];  // Return the first one if none is found (illegal state)
+            return GetUnits()[0];  // Return the first one if none is found (illegal state)
         }
 
         private static BrushBehaviourBase GetBrushBehaviorOfUnitBrush(UnitBrush ub)
@@ -142,12 +142,22 @@ namespace TABS_Multiplayer
 
         private static MapAsset GetMap(int index) // Get the map by the index id
         {
-            foreach(MapAsset map in LandfallUnitDatabase.GetDatabase().Maps)
+            foreach(MapAsset map in GetMaps())
             {
                 if (map.m_mapIndex == index)
                     return map;
             }
-            return LandfallUnitDatabase.GetDatabase().Maps[0]; // Return the first one if none is found (illegal state)
+            return GetMaps()[0]; // Return the first one if none is found (illegal state)
+        }
+
+        private static List<MapAsset> GetMaps() // Get maps by reflection
+        {
+            return (List<MapAsset>) typeof(LandfallUnitDatabase).GetMethod("GetAllMaps").Invoke(LandfallUnitDatabase.GetDatabase(), null);
+        }
+
+        private static List<UnitBlueprint> GetUnits() // Get units by reflection
+        {
+            return (List<UnitBlueprint>)typeof(LandfallUnitDatabase).GetMethod("GetAllUnits").Invoke(LandfallUnitDatabase.GetDatabase(), null);
         }
     }
 }
